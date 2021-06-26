@@ -33,6 +33,7 @@ Encoding: UTF-8
 LazyData: true
 Imports:
     expm,
+    glmgen,
     MASS,
     e1071,
     pesel,
@@ -58,6 +59,3 @@ Suggests:
     gridExtra,
     testthat (>= 2.1.0),
     covr
-LinkingTo: 
-    Rcpp,
-    RcppArmadillo
