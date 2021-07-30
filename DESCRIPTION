@@ -41,6 +41,8 @@ Imports:
     stats,
     utils,
     Rcpp
+Remotes:
+    statsmaths/glmgen/R_pkg/glmgen
 RoxygenNote: 7.1.1
 URL: https://github.com/mandymejia/fMRIscrub
 BugReports: https://github.com/mandymejia/fMRIscrub/issues
