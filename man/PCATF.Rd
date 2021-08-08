@@ -43,6 +43,15 @@ SVD The trend-filtered SVD decomposition of X (list with u, d, v).
 \description{
 PCA Trend Filtering. From: https://github.com/Lei-D/PCATF
 }
+\section{References}{
+
+\itemize{
+\item{Kim, S.-J., Koh, K., Boyd, S. & Gorinevsky, D. \$\\ell_1\$ Trend Filtering. SIAM Rev. 51, 339–360 (2009).}
+\item{Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Projection scrubbing: a more effective, data-driven fMRI denoising method. (2021).}
+\item{Tibshirani, R. J. Adaptive piecewise polynomial estimation via trend filtering. The Annals of Statistics 42, 285–323 (2014).}
+}
+}
+
 \examples{
 set.seed(12345)
 U = matrix(rnorm(100*3),ncol=3)
@@ -63,12 +72,3 @@ matplot(out3_svd$u, ty='l')
 out3_svd$d
 plot(rowSums(out3_svd$u^2), ty='l')
 }
-\section{References}{
-
-\itemize{
-\item{Kim, S.-J., Koh, K., Boyd, S. & Gorinevsky, D. \$\\ell_1\$ Trend Filtering. SIAM Rev. 51, 339–360 (2009).}
-\item{Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Projection scrubbing: a more effective, data-driven fMRI denoising method. (2021).}
-\item{Tibshirani, R. J. Adaptive piecewise polynomial estimation via trend filtering. The Annals of Statistics 42, 285–323 (2014).}
-}
-}
-
