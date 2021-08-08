@@ -25,7 +25,7 @@ this argument if the svd has already been computed. Default NULL.}
 will be needed to display the leverage images for outlying observations.}
 
 \item{K}{(Optional) The number of trend-filtered PCs to solve for. If not
- provided, it will be set to the number of regular PCs with variance above
+provided, it will be set to the number of regular PCs with variance above
 the mean, up to 100 PCs.}
 
 \item{lambda}{The trend filtering parameter; roughly, the filtering intensity.
@@ -63,3 +63,12 @@ matplot(out3_svd$u, ty='l')
 out3_svd$d
 plot(rowSums(out3_svd$u^2), ty='l')
 }
+\section{References}{
+
+\itemize{
+\item{Kim, S.-J., Koh, K., Boyd, S. & Gorinevsky, D. \$\\ell_1\$ Trend Filtering. SIAM Rev. 51, 339–360 (2009).}
+\item{Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Projection scrubbing: a more effective, data-driven fMRI denoising method. (2021).}
+\item{Tibshirani, R. J. Adaptive piecewise polynomial estimation via trend filtering. The Annals of Statistics 42, 285–323 (2014).}
+}
+}
+
