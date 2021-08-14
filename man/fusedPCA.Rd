@@ -2,7 +2,7 @@
 % Please edit documentation in R/fusedPCA.R
 \name{fusedPCA}
 \alias{fusedPCA}
-\title{Fused PCA (C++ core)}
+\title{Fused PCA}
 \usage{
 fusedPCA(
   X,
@@ -41,7 +41,7 @@ Default is 0.5 . Can be NULL (lets algorithm decide).}
 SVD The fused SVD decomposition of X (list with u, d, v).
 }
 \description{
-PCA Trend Filtering. From: https://github.com/Lei-D/PCATF
+From: https://github.com/Lei-D/fusedPCA
 }
 \section{References}{
 
@@ -61,7 +61,7 @@ U = svd(U)$u
 D = diag(c(10,5,1))
 V = svd(matrix(rnorm(3*20),nrow=20))$u
 X = U \%*\% D \%*\% t(V)
-out3 = PCATF(X, K=3, lambda=.75)
+out3 = fusedPCA(X, K=3, lambda=.75)
 matplot(out3$u, ty='l')
 out3$d
 plot(rowSums(out3$u^2), ty='l')
