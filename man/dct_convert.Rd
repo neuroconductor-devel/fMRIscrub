@@ -2,9 +2,15 @@
 % Please edit documentation in R/utils.R
 \name{dct_convert}
 \alias{dct_convert}
+\alias{dct2Hz}
+\alias{Hz2dct}
 \title{Convert between number of DCT bases and Hz of highpass filter}
 \usage{
 dct_convert(T_, TR, n = NULL, f = NULL)
+
+dct2Hz(T_, TR, n)
+
+Hz2dct(T, TR, f)
 }
 \arguments{
 \item{T_}{Length of timeseries (number of timepoints)}

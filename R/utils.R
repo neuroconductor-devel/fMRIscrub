@@ -123,6 +123,16 @@ dct_convert <- function(T_, TR, n=NULL, f=NULL){
   } else { stop() }
 }
 
+#' @rdname dct_convert
+dct2Hz <- function(T_, TR, n){
+  dct_convert(T_, TR, n=n)
+}
+
+#' @rdname dct_convert
+Hz2dct <- function(T, TR, f){
+  dct_convert(T_, TR, f=f)
+}
+
 #' Wrapper to common functions for reading NIFTIs
 #' 
 #' Tries \code{RNifti::readNifti}, then \code{oro.nifti::readNIfTI}. If
