@@ -10,7 +10,7 @@ dct_convert(T_, TR, n = NULL, f = NULL)
 
 dct2Hz(T_, TR, n)
 
-Hz2dct(T, TR, f)
+Hz2dct(T_, TR, f)
 }
 \arguments{
 \item{T_}{Length of timeseries (number of timepoints)}

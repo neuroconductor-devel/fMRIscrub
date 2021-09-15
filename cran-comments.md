@@ -124,3 +124,10 @@ https://app.travis-ci.com:443/github/mandymejia/fMRIscrub)
 ## Fifth resubmission
 
 Submitting again after the CRAN holiday.
+
+## Sixth resubmission
+
+  code.cpp:158:41: error: call of overloaded ‘sqrt(int&)’ is ambiguous
+          err = arma::norm((uk-ukold)/sqrt(n));
+
+* Fixed!

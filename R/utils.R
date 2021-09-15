@@ -129,7 +129,7 @@ dct2Hz <- function(T_, TR, n){
 }
 
 #' @rdname dct_convert
-Hz2dct <- function(T, TR, f){
+Hz2dct <- function(T_, TR, f){
   dct_convert(T_, TR, f=f)
 }
 
