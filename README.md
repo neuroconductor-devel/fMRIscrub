@@ -5,8 +5,7 @@
 
 <!-- badges: start -->
 
-[![Travis build
-status](https://app.travis-ci.com:443/mandymejia/fMRIscrub.svg?branch=master)](https://app.travis-ci.com:443/github/mandymejia/fMRIscrub)
+[![R-CMD-check](https://github.com/mandymejia/fMRIscrub/workflows/R-CMD-check/badge.svg)](https://github.com/mandymejia/fMRIscrub/actions)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/mandymejia/fMRIscrub?branch=master&svg=true)](https://ci.appveyor.com/project/mandymejia/fMRIscrub)
 [![Coveralls test

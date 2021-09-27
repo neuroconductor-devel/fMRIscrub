@@ -1,12 +1,14 @@
 ^.*\.Rproj$
 ^\.Rproj\.user$
 ^README\.Rmd$
-^\.travis\.yml$
+^\.github$
 ^appveyor\.yml$
+^vignettes$
+^LICENSE\.md$
+^CRAN-RELEASE$
+^cran-comments\.md
 ^data-raw$
 robdist_new.*\.R
 ^vignettes/vignette_new_RD\.rmd$
-^cran-comments.md
 ^doc$
 ^Meta$
-^CRAN-RELEASE$
