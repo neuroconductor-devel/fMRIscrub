@@ -5,7 +5,7 @@
 #' 
 #' @param x The \eqn{T x V} numeric data matrix, or a \code{"xifti"} object.
 #'  In the plot, the \eqn{T} index will increase from left to right, and the 
-#'  \eqn{V} will increase from bottom to top.
+#'  \eqn{V} will increase from top to bottom.
 #' @param qcut Sets blackpoint at the \code{qcut} quantile, and the
 #'  whitepoint at the \code{1-qcut} quantile. Default: \code{.1}. This is
 #'  equivalent to setting the color range between the 10% and 90% quantiles.
