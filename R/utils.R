@@ -156,17 +156,23 @@ read_nifti <- function(nifti_fname){
 
 #' Convert to \eqn{T} by \eqn{V} matrix
 #' 
-#' A \code{"xifti"} is VxT, whereas \code{scrub} accepts a
+#' A \code{"xifti"} is VxT, whereas \code{scrub} and \code{grayplot} accept a
 #'  TxV matrix. This function calls \code{as.matrix} and transposes the data
 #'  if it is a \code{"xifti"}.
 #' 
 #' @param x The object to coerce to a matrix
+#' @param sortSub Sort subcortex by labels? Default: \code{FALSE}
 #' @return x as a matrix.
 #' @keywords internal
-as.matrix2 <- function(x) {
+as.matrix2 <- function(x, sortSub=FALSE) {
   if (inherits(x, "xifti")) {
-    return( t(as.matrix(x)) )
+    if (sortSub && !is.null(x$data$subcort)) {
+      x$data$subcort <- x$data$subcort[order(x$meta$subcort$labels),]
+    }
+    x <- t(as.matrix(x))
   } else {
-    return( as.matrix(x) )
+    x <- as.matrix(x)
   }
+
+  x
 }

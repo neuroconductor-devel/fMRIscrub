@@ -4,16 +4,18 @@
 \alias{as.matrix2}
 \title{Convert to \eqn{T} by \eqn{V} matrix}
 \usage{
-as.matrix2(x)
+as.matrix2(x, sortSub = FALSE)
 }
 \arguments{
 \item{x}{The object to coerce to a matrix}
+
+\item{sortSub}{Sort subcortex by labels? Default: \code{FALSE}}
 }
 \value{
 x as a matrix.
 }
 \description{
-A \code{"xifti"} is VxT, whereas \code{scrub} accepts a
+A \code{"xifti"} is VxT, whereas \code{scrub} and \code{grayplot} accept a
 TxV matrix. This function calls \code{as.matrix} and transposes the data
 if it is a \code{"xifti"}.
 }
