@@ -33,19 +33,19 @@ clamp the data values.}
 to write the grayplot to. If \code{NULL} (default), return the plot directly
 instead of writing a file.}
 
-\item{center, scale}{Center and scale the data? Cannot scale without centering.
-If \code{x} is fMRI data which has not otherwise been centered or scaled,
-it is recommended to center but not scale it (default).}
+\item{center, scale}{Center and scale the data? If \code{x} is fMRI data
+which has not otherwise been centered or scaled, it is recommended to center
+but not scale it (default).}
 
 \item{colors}{\code{"gray255"} (default) will use a grayscale color ramp
 from black to white. Otherwise, this should be a character vector of
-color names to use.}
-
-\item{sortSub}{If \code{x} is a \code{"xifti"} object with subcortical data,
-should the voxels be sorted by structure alphabetically? Default: \code{TRUE}.
+color names to use.
 
 Colors will be assigned from the lowest to the highest data value, after
 any clamping of the data values by \code{qcut}.}
+
+\item{sortSub}{If \code{x} is a \code{"xifti"} object with subcortical data,
+should the voxels be sorted by structure alphabetically? Default: \code{TRUE}.}
 
 \item{...}{Additional arguments to \code{pdf} or \code{png}, such as width
 and height.}

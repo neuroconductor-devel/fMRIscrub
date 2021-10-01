@@ -17,17 +17,17 @@
 #' @param fname A \code{.pdf} (highly recommended) or \code{.png} file path
 #'  to write the grayplot to. If \code{NULL} (default), return the plot directly
 #'  instead of writing a file.
-#' @param center,scale Center and scale the data? Cannot scale without centering.
-#'  If \code{x} is fMRI data which has not otherwise been centered or scaled,
-#'  it is recommended to center but not scale it (default).
+#' @param center,scale Center and scale the data? If \code{x} is fMRI data 
+#'  which has not otherwise been centered or scaled, it is recommended to center
+#'  but not scale it (default).
 #' @param colors \code{"gray255"} (default) will use a grayscale color ramp
 #'  from black to white. Otherwise, this should be a character vector of
 #'  color names to use. 
-#' @param sortSub If \code{x} is a \code{"xifti"} object with subcortical data,
-#'  should the voxels be sorted by structure alphabetically? Default: \code{TRUE}.
 #' 
 #'  Colors will be assigned from the lowest to the highest data value, after 
 #'  any clamping of the data values by \code{qcut}.
+#' @param sortSub If \code{x} is a \code{"xifti"} object with subcortical data,
+#'  should the voxels be sorted by structure alphabetically? Default: \code{TRUE}.
 #' @param ... Additional arguments to \code{pdf} or \code{png}, such as width
 #'  and height.
 #' 
