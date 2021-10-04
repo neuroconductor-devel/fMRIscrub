@@ -1,6 +1,6 @@
-#' Grayplot of data matrix
+#' carpetplot of data matrix
 #' 
-#' Plot a matrix with \code{graphics::image}. For fMRI data, this is the "grayplot"
+#' Plot a matrix with \code{graphics::image}. For fMRI data, this is the "carpetplot"
 #'  coined by (Power, 2017). The \code{graphics} package is required.
 #' 
 #' @param x The \eqn{T x V} numeric data matrix, or a \code{"xifti"} object.
@@ -15,7 +15,7 @@
 #'  Must be between 0 and .49. If \code{0} or \code{NULL} (default), do not 
 #'  clamp the data values.
 #' @param fname A \code{.pdf} (highly recommended) or \code{.png} file path
-#'  to write the grayplot to. If \code{NULL} (default), return the plot directly
+#'  to write the carpetplot to. If \code{NULL} (default), return the plot directly
 #'  instead of writing a file.
 #' @param center,scale Center and scale the data? If \code{x} is fMRI data 
 #'  which has not otherwise been centered or scaled, it is recommended to center
@@ -42,7 +42,7 @@
 #' 
 #' @export
 #' 
-grayplot <- function(
+carpetplot <- function(
   x, qcut=.1, fname=NULL, center=TRUE, scale=FALSE, colors="gray255", sortSub=TRUE, ...){
 
   if (!requireNamespace("graphics", quietly = TRUE)) {
@@ -95,4 +95,74 @@ grayplot <- function(
   }
 
   invisible(NULL)
+}
+
+#' Stacked carpetplot
+#' 
+#' Stacks carpetplots on top of one anotherr by rbinding the matrices. 
+#' 
+#' @param x_list List of data matrices
+#' @param center,scale Center and scale the data? If \code{x} is fMRI data 
+#'  which has not otherwise been centered or scaled, it is recommended to center
+#'  but not scale it (default).
+#' @param qcut Sets blackpoint at the \code{qcut} quantile, and the
+#'  whitepoint at the \code{1-qcut} quantile. Default: \code{.1}. This is
+#'  equivalent to setting the color range between the 10% and 90% quantiles.
+#'  The quantiles are computed across the entire data matrix after any 
+#'  centering or scaling. 
+#' 
+#'  Must be between 0 and .49. If \code{0} or \code{NULL} (default), do not 
+#'  clamp the data values.
+#' @param match_scale Match the scales of the carpetplots? Default: \code{TRUE}.
+#' @param nsep Equivalent number of data locations for size of gap between
+#'  carpetplots. Default: zero (no gap).
+#' @param ... Additional arguments to \code{carpetplot}
+#' @return \code{NULL}, invisibly
+#' @export
+carpetplot_stack <- function(x_list, center=TRUE, scale=FALSE, qcut=.1, match_scale=TRUE, nsep=0, ...){
+
+  # [TO DO] check args
+  args <- list(...)
+  sortSub <- ifelse("sortSub" %in% names(args), args$sortSub, TRUE)
+
+  x_list <- lapply(x_list, as.matrix2, sortSub=sortSub)
+
+  # Center or scale.
+  if (center | scale) { 
+    x_list <- lapply(x_list, scale, center=center, scale=scale)
+  }
+
+  # Clamp to quantile cutoffs.
+  if (!is.null(qcut)) {
+    qcut <- as.numeric(qcut)
+    if (qcut > 1e-8) {
+      stopifnot(qcut < .49)
+      for (ii in seq(length(x_list))) {
+        x_list[[ii]][x_list[[ii]] < quantile(x_list[[ii]], qcut)] <- quantile(x_list[[ii]], qcut)
+        x_list[[ii]][x_list[[ii]] > quantile(x_list[[ii]], 1-qcut)] <- quantile(x_list[[ii]], 1-qcut)
+      }
+    }
+  }
+
+  if (match_scale) {
+    scale_cp <- function(x){ q <- min(x[]); x[] <- (x[]-q)/(max(x[]) - q); x }
+    x_list <- lapply(x_list, scale_cp)
+  }
+  xmax <- max(vapply(x_list, max, 0, na.rm=TRUE), na.rm=TRUE)
+
+  if (nsep > 0) {
+    x2 <- vector("list", length(x_list)*2 - 1)
+    for (ii in seq(length(x2))) {
+      if (ii %% 2 == 1) {
+        x2[[ii]] <- x_list[[ceiling(ii/2)]]
+      } else {
+        x2[[ii]] <- matrix(xmax, nrow=nrow(x_list[[1]]), ncol=nsep)
+      }
+    }
+    x2 <- do.call(cbind, x2)
+  } else {
+    x2 <- do.call(cbind, x_list)
+  }
+
+  carpetplot(x2, center=FALSE, scale=FALSE, qcut=0, ...)
 }

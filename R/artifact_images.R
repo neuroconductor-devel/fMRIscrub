@@ -25,6 +25,8 @@
 #' @export
 artifact_images <- function(psx, idx=NULL, use_dt=TRUE){
 
+  # TO DO: only high-kurtosis components?
+
   # Check idx.
   if (is.null(idx)) {
     idx <- which(psx$outlier_flag)
