@@ -362,14 +362,17 @@ pscrub_multi = function(
       ICA2_kurt = out$PCA$nPCs_avgvar
     )[projection[grepl("ICA", projection)]]))
     if (verbose) { cat("Computing ICA.\n" ) }
-    if (!requireNamespace("ica", quietly = TRUE)) {
-      stop("Package \"ica\" needed to compute the ICA. Please install it.", call. = FALSE)
+    if (!requireNamespace("fastICA", quietly = TRUE)) {
+      stop("Package \"fastICA\" needed to compute the ICA. Please install it.", call. = FALSE)
     }
     if (!is.null(seed)) {
-      out$ICA <- with(set.seed(seed), ica::icaimax(t(X), maxK_ICA, center=FALSE))[c("S", "M")]
+      out$ICA <- with(set.seed(seed), fastICA::fastICA(t(X), maxK_ICA, method="C"))[c("S", "A")]
     } else {
-      out$ICA <- ica::icaimax(t(X), maxK_ICA, center=FALSE)[c("S", "M")]
+      out$ICA <- fastICA::fastICA(t(X), maxK_ICA, method="C")[c("S", "A")]
     }
+    names(out$ICA)[names(out$ICA)=="A"] <- "M"
+    out$ICA$M <- t(out$ICA$M)
+
     # Issue due to rank.
     if (ncol(out$ICA$M) < maxK_ICA) {
       cat("Rank issue with ICA: adding constant zero columns.\n")
