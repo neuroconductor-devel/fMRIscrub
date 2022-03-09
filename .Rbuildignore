@@ -12,3 +12,6 @@ robdist_new.*\.R
 ^vignettes/vignette_new_RD\.rmd$
 ^doc$
 ^Meta$
+^CRAN-RELEASE$
+^codecov\.yml$
+^\.github$

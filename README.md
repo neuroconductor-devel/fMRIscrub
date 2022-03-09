@@ -8,8 +8,8 @@
 [![R-CMD-check](https://github.com/mandymejia/fMRIscrub/workflows/R-CMD-check/badge.svg)](https://github.com/mandymejia/fMRIscrub/actions)
 [![AppVeyor build
 status](https://ci.appveyor.com/api/projects/status/github/mandymejia/fMRIscrub?branch=master&svg=true)](https://ci.appveyor.com/project/mandymejia/fMRIscrub)
-[![Coveralls test
-coverage](https://coveralls.io/repos/github/mandymejia/fMRIscrub/badge.svg?branch=master)](https://coveralls.io/github/mandymejia/fMRIscrub?branch=master)
+[![Codecov test
+coverage](https://codecov.io/gh/mandymejia/fMRIscrub/branch/master/graph/badge.svg)](https://app.codecov.io/gh/mandymejia/fMRIscrub?branch=master)
 <!-- badges: end -->
 
 `fMRIscrub` is a collection of routines for data-driven scrubbing
