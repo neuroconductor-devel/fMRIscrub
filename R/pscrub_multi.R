@@ -246,6 +246,7 @@ pscrub_multi = function(
   # Compute PESEL
   maxK_PCA <- 1
   if (any(valid_projection_PESEL %in% projection)) {
+    if (verbose) { cat("Computing PESEL.\n") }
     if (!is.null(seed)) {
       nPCs_PESEL <- with(set.seed(seed), pesel::pesel(t(X), npc.max=ceiling(T_/2), method="homogenous")$nPCs)
     } else {
