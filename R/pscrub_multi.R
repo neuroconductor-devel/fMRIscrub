@@ -243,78 +243,83 @@ pscrub_multi = function(
   # Make projection. -----------------------------------------------------------
   # ----------------------------------------------------------------------------
 
-  # Compute PCA. (Even if only ICA is being used, since we need `nComps`)
-  if (verbose) {
-    cat(paste0(
-      "Computing PCA.\n"
-    ))
-  }
-  if (get_dirs || "fusedPCA" %in% base_projection) {
-    out$PCA <- tryCatch(
-      {
-        svd(X)[c("u", "d", "v")]
-      },
-      error = function(cond) {
-        message(cond)
-        cat(
-          "Trying `corpcor::fast.svd`. An error will occur if this package ",
-          "is not available, in which case the package should be installed ",
-          "and `pscrub` should be run again.\n"
-        )
-        if (!requireNamespace("corpcor", quietly = TRUE)) {
-          stop("Package \"corpcor\" needed since `svd` failed. Please install it.", call. = FALSE)
-        }
-        return(corpcor::fast.svd(X)[c("u", "d", "v")])
-      }
-    )
-    names(out$PCA) <- toupper(names(out$PCA))
-  } else {
-    # Conserve memory by using `XXt`.
-    out$PCA <- tryCatch(
-      {
-        svd(tcrossprod(X))[c("u", "d", "v")]
-      },
-      error = function(cond) {
-        message(cond)
-        cat(
-          "Trying `corpcor::fast.svd`. An error will occur if this package",
-          "is not available, in which case the package should be installed",
-          "and `pscrub` should be run again.\n"
-        )
-        if (!requireNamespace("corpcor", quietly = TRUE)) {
-          stop("Package \"corpcor\" needed since `svd` failed. Please install it.", call. = FALSE)
-        }
-        return(corpcor::fast.svd(tcrossprod(X))[c("u", "d", "v")])
-      }
-    )
-    names(out$PCA) <- toupper(names(out$PCA))
-    out$PCA$D <- sqrt(out$PCA$D)
-    out$PCA$V <- NULL
-  }
-  # Keep only the above-average variance/PESEL PCs (whichever is greater).
+  # Compute PESEL
   maxK_PCA <- 1
-  # [TO DO]: move outside if(PCA) so PCA isn't required for ICA+PESEL
   if (any(valid_projection_PESEL %in% projection)) {
     if (!is.null(seed)) {
-      out$PCA$nPCs_PESEL <- with(set.seed(seed), pesel::pesel(t(X), npc.max=ceiling(T_/2), method="homogenous")$nPCs)
+      nPCs_PESEL <- with(set.seed(seed), pesel::pesel(t(X), npc.max=ceiling(T_/2), method="homogenous")$nPCs)
     } else {
-      out$PCA$nPCs_PESEL <- pesel::pesel(t(X), npc.max=ceiling(T_/2), method="homogenous")$nPCs
+      nPCs_PESEL <- pesel::pesel(t(X), npc.max=ceiling(T_/2), method="homogenous")$nPCs
     }
-    if (out$PCA$nPCs_PESEL == 1) {
+    if (nPCs_PESEL == 1) {
       warning("PESEL estimates that there is only one component. Using two.")
-      out$PCA$nPCs_PESEL <- 2
+      nPCs_PESEL <- 2
     }
-    maxK_PCA <- max(maxK_PCA, out$PCA$nPCs_PESEL)
+    maxK_PCA <- max(maxK_PCA, nPCs_PESEL)
   }
-  if (any(valid_projection_avgvar %in% projection)) {
-    out$PCA$nPCs_avgvar <- max(1, sum(out$PCA$D^2 > mean(out$PCA$D^2)))
-    maxK_PCA <- max(maxK_PCA, out$PCA$nPCs_avgvar)
+
+  # Compute PCA. (Even if only ICA is being used, since we need `nComps`)
+  if ("PCA" %in% base_projection || "fusedPCA" %in% base_projection) {
+    if (verbose) { cat("Computing PCA.\n") }
+    if (get_dirs || "fusedPCA" %in% base_projection) {
+      out$PCA <- tryCatch(
+        { svd(X)[c("u", "d", "v")] },
+        error = function(cond) {
+          message(cond)
+          if (!requireNamespace("corpcor", quietly = TRUE)) {
+            stop(
+              "`svd` failed, and the backup routine `corpcor::fast.svd` ", 
+              "is not available since the Package \"corpcor\" is needed. ",
+              "Please install it.", call. = FALSE
+            )
+          }
+          cat("Trying `corpcor::fast.svd`.\n")
+          return(corpcor::fast.svd(X)[c("u", "d", "v")])
+        }
+      )
+      names(out$PCA) <- toupper(names(out$PCA))
+    } else {
+      # Conserve memory by using `XXt`.
+      out$PCA <- tryCatch(
+        { svd(tcrossprod(X))[c("u", "d", "v")] },
+        error = function(cond) {
+          message(cond)
+          if (!requireNamespace("corpcor", quietly = TRUE)) {
+            stop(
+              "`svd` failed, and the backup routine `corpcor::fast.svd` ", 
+              "is not available since the Package \"corpcor\" is needed. ",
+              "Please install it.", call. = FALSE
+            )
+          }
+          cat("Trying `corpcor::fast.svd`.\n")
+          return(corpcor::fast.svd(tcrossprod(X))[c("u", "d", "v")])
+        }
+      )
+      names(out$PCA) <- toupper(names(out$PCA))
+      out$PCA$D <- sqrt(out$PCA$D)
+      out$PCA$V <- NULL
+    }
+    # Keep only the above-average variance/PESEL PCs (whichever is greater).
+    if (any(valid_projection_PESEL %in% projection)) {
+      out$PCA$nPCs_PESEL <- nPCs_PESEL
+    }
+    if (any(valid_projection_avgvar %in% projection)) {
+      out$PCA$nPCs_avgvar <- max(1, sum(out$PCA$D^2 > mean(out$PCA$D^2)))
+      maxK_PCA <- max(maxK_PCA, out$PCA$nPCs_avgvar)
+    }
+    # Identify which PCs have high kurtosis.
+    if (any(c("PCA_kurt", "PCA2_kurt") %in% projection)) {
+      out$PCA$highkurt <- high_kurtosis(out$PCA$U[, seq(maxK_PCA), drop=FALSE], kurt_quantile=kurt_quantile, min_1=TRUE)
+    }
+  } else {
+    if (any(valid_projection_PESEL %in% projection)) {
+      out$PCA$nPCs_PESEL <- nPCs_PESEL
+    }
+    if (any(valid_projection_avgvar %in% projection)) {
+      eig <- svd(tcrossprod(X))$d
+      out$PCA$nPCs_avgvar <- max(1, sum(eig > eig))
+    }
   }
-  # Identify which PCs have high kurtosis.
-  if (any(c("PCA_kurt", "PCA2_kurt") %in% projection)) {
-    out$PCA$highkurt <- high_kurtosis(out$PCA$U[, seq(maxK_PCA), drop=FALSE], kurt_quantile=kurt_quantile)
-  }
-  # [TO DO]: Resolve case where no PC has high kurtosis
 
   # Compute fusedPCA.
   if ("fusedPCA" %in% base_projection) {
@@ -346,7 +351,9 @@ pscrub_multi = function(
         " fused PC scores are zero-variance.\n"
       )
     }
-    names(out$fusedPCA)[names(out$fusedPCA) %in% c("u", "d", "v")] <- toupper(names(out$fusedPCA)[names(out$fusedPCA) %in% c("u", "d", "v")])
+    names(out$fusedPCA)[names(out$fusedPCA) %in% c("u", "d", "v")] <- toupper(
+      names(out$fusedPCA)[names(out$fusedPCA) %in% c("u", "d", "v")]
+    )
   }
   # Identify which fused PCs have high kurtosis.
   if (any(c("fusedPCA_kurt", "fusedPCA2_kurt") %in% projection)) {
@@ -354,22 +361,26 @@ pscrub_multi = function(
   }
 
   # Compute ICA
-  if (any(c("ICA", "ICA2") %in% base_projection)) {
+  if ("ICA" %in% base_projection) {
     maxK_ICA <- max(as.numeric(list(
       ICA = out$PCA$nPCs_PESEL,
       ICA_kurt = out$PCA$nPCs_PESEL,
       ICA2 = out$PCA$nPCs_avgvar,
       ICA2_kurt = out$PCA$nPCs_avgvar
     )[projection[grepl("ICA", projection)]]))
+
     if (verbose) { cat("Computing ICA.\n" ) }
-    if (!requireNamespace("ica", quietly = TRUE)) {
-      stop("Package \"ica\" needed to compute the ICA. Please install it.", call. = FALSE)
+    if (!requireNamespace("fastICA", quietly = TRUE)) {
+      stop("Package \"fastICA\" needed to compute the ICA. Please install it.", call. = FALSE)
     }
     if (!is.null(seed)) {
-      out$ICA <- with(set.seed(seed), ica::icaimax(t(X), maxK_ICA, center=FALSE))[c("S", "M")]
+      out$ICA <- with(set.seed(seed), fastICA::fastICA(t(X), maxK_ICA, method="C"))[c("S", "A")]
     } else {
-      out$ICA <- ica::icaimax(t(X), maxK_ICA, center=FALSE)[c("S", "M")]
+      out$ICA <- fastICA::fastICA(t(X), maxK_ICA, method="C")[c("S", "A")]
     }
+    names(out$ICA)[names(out$ICA)=="A"] <- "M"
+    out$ICA$M <- t(out$ICA$M)
+
     # Issue due to rank.
     if (ncol(out$ICA$M) < maxK_ICA) {
       cat("Rank issue with ICA: adding constant zero columns.\n")
@@ -389,7 +400,7 @@ pscrub_multi = function(
   # Do this after PCA info was given to fusedPCA
   if (!("PCA" %in% base_projection)) {
     out$PCA$U <- out$PCA$D <- out$PCA$V <- NULL
-  } else {
+  } else if (!is.null(out$PCA$U)) {
     # Remove smaller PCs.
     if (!full_PCA) {
       out$PCA$U <- out$PCA$U[, seq(maxK_PCA), drop=FALSE]
