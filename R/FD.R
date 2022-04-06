@@ -33,6 +33,10 @@
 #' @param detrend Detrend each RP with the DCT before computing FD?
 #'  Default: \code{FALSE}. Can be a number of DCT bases to use, or \code{TRUE}
 #'  to use 4.
+#' @param lag The difference of indices between which to calculate change in
+#'  position. Default: \code{1} (the previous timepoint). Changing this
+#'  argument sets \eqn{\Delta x_i = x_{i-lag} - x_i} (and similarly for the 
+#'  other RPs).
 #' @param cutoff FD values higher than this will be flagged. Default: \code{.3}.
 #' @return A list with components
 #' \describe{
@@ -52,7 +56,7 @@
 #' 
 FD <- function(
   X, trans_units = c("mm", "cm", "in"), rot_units = c("deg", "rad", "mm", "cm", "in"), 
-  brain_radius=NULL, detrend=FALSE, cutoff=.3) {
+  brain_radius=NULL, detrend=FALSE, lag=1, cutoff=.3) {
 
   if (is.character(X)) { X <- read.table(X) }
   X <- as.matrix(X); stopifnot(is.matrix(X))
@@ -90,8 +94,8 @@ FD <- function(
   }
 
   # Compute FD.
-  Xdiff <- apply(X, 2, diff)
-  FD <- c(0, apply(abs(Xdiff), 1, sum))
+  Xdiff <- apply(X, 2, diff, lag=lag)
+  FD <- c(rep(0, lag), apply(abs(Xdiff), 1, sum))
 
   # Revert units to `trans_units`.
   attr(FD, "units") <- trans_units
