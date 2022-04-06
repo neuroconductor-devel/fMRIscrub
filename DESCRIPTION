@@ -52,7 +52,7 @@ Suggests:
     RNifti,
     ggplot2,
     ggpubr,
-    ica,
+    fastICA,
     neurobase,
     oro.nifti,
     gridExtra,
