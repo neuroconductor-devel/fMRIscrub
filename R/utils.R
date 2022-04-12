@@ -80,49 +80,6 @@ scale_med <- function(mat){
   list(mat=mat, const_mask=const_mask)
 }
 
-#' Cosine bases for the DCT
-#' 
-#' @param T_ Length of timeseries
-#' @param n Number of cosine bases
-#' 
-#' @return Matrix with cosine bases along columns
-#' 
-#' @export
-dct_bases <- function(T_, n){
-  b <- matrix(NA, T_, n)
-  idx <- (seq(T_)-1)/(T_-1)
-  for (ii in seq(n)) { b[,ii] <- cos(idx*pi*ii) }
-  b
-}
-
-#' Convert between number of DCT bases and Hz of highpass filter
-#' 
-#' Provide either \code{n} or \code{f} to calculate the other.
-#' 
-#' If only the total length of the scan is known, you can set that to \code{TR}
-#' and use \code{T_=1}.
-#' 
-#' \eqn{f = n / (2 * T_ * TR)}
-#' 
-#' @param T_ Length of timeseries (number of timepoints)
-#' @param TR TR of the fMRI scan, in seconds (the time between timepoints)
-#' @param n Number of cosine bases
-#' @param f Hz of highpass filter
-#' 
-#' @return If \code{n} was provided, the highpass filter cutoff (Hz) is returned.
-#'  Otherwise, if \code{f} was provided, the number of cosine bases is returned.
-#'  The result should be rounded before passing to \code{\link{dct_bases}}
-#' 
-#' @export
-dct_convert <- function(T_, TR, n=NULL, f=NULL){
-  stopifnot(xor(is.null(n), is.null(f)))
-  if (is.null(n)) {
-    return(f * 2 * T_ * TR)
-  } else if (is.null(f)) {
-    return(n / (2 * T_ * TR))
-  } else { stop() }
-}
-
 #' Wrapper to common functions for reading NIFTIs
 #' 
 #' Tries \code{RNifti::readNifti}, then \code{oro.nifti::readNIfTI}. If
@@ -146,17 +103,23 @@ read_nifti <- function(nifti_fname){
 
 #' Convert to \eqn{T} by \eqn{V} matrix
 #' 
-#' A \code{"xifti"} is VxT, whereas \code{scrub} accepts a
+#' A \code{"xifti"} is VxT, whereas \code{scrub} and \code{grayplot} accept a
 #'  TxV matrix. This function calls \code{as.matrix} and transposes the data
 #'  if it is a \code{"xifti"}.
 #' 
 #' @param x The object to coerce to a matrix
+#' @param sortSub Sort subcortex by labels? Default: \code{FALSE}
 #' @return x as a matrix.
 #' @keywords internal
-as.matrix2 <- function(x) {
+as.matrix2 <- function(x, sortSub=FALSE) {
   if (inherits(x, "xifti")) {
-    return( t(as.matrix(x)) )
+    if (sortSub && !is.null(x$data$subcort)) {
+      x$data$subcort <- x$data$subcort[order(x$meta$subcort$labels),]
+    }
+    x <- t(as.matrix(x))
   } else {
-    return( as.matrix(x) )
+    x <- as.matrix(x)
   }
+
+  x
 }
