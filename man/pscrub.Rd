@@ -239,6 +239,7 @@ outline of the algorithm: \code{vignette("projection_scrubbing", package="fMRIsc
 }
 
 \examples{
+library(fastICA)
 n_voxels = 1e4
 n_timepoints = 100
 X = matrix(rnorm(n_timepoints*n_voxels), ncol = n_voxels)
