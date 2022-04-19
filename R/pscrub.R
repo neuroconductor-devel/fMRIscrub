@@ -10,7 +10,7 @@
 #'  data.
 #' 
 #'  Refer to the projection scrubbing vignette for a demonstration and an
-#'  outline of the algorithm: \code{vignette("projection_scrubbing", package="cubature")}
+#'  outline of the algorithm: \code{vignette("projection_scrubbing", package="fMRIscrub")}
 #' 
 #' @section References:
 #'  \itemize{

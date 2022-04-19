@@ -12,6 +12,12 @@ vignette: >
 ```{r include=FALSE}
 library(knitr)
 knitr::opts_chunk$set(autodep = TRUE, cache = FALSE)
+
+if (!requireNamespace("oro.nifti", quietly = TRUE)) {
+  stop("Package \"oro.nifti\" needed for this vignette. Please install it.", call. = FALSE)
+}
+
+library(oro.nifti)
 ```
 
 `fMRIscrub` is an R package that implements routines for cleaning fMRI data, namely data-driven scrubbing (projection scrubbing and DVARS), motion scrubbing (framewise displacement), anatomical CompCor, detrending, and nuisance regression. Several of these methods are also applicable to other high-dimensional data analysis tasks. For example, projection scrubbing can be used as a general outlier detection method.
@@ -79,11 +85,6 @@ cowplot::plot_grid(p1, p2, nrow=1)
 ### fMRI image reconstruction
 
 Let's see what the problem was in the first scan. We can reconstruct the original fMRI image using the mask which was originally applied to vectorize it. 
-
-```{r warning=FALSE}
-library(oro.nifti)
-library(neurobase)
-```
 
 ```{r}
 # Unmask the first scan
