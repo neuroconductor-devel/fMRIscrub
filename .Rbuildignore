@@ -15,3 +15,4 @@ robdist_new.*\.R
 ^CRAN-RELEASE$
 ^codecov\.yml$
 ^\.github$
+^CRAN-SUBMISSION$
