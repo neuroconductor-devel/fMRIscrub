@@ -100,7 +100,7 @@ pscrub_multi = function(
 
   # `X` ------------------------------------------------------------------------
   if (verbose) { cat("Checking for missing, infinite, and constant data.\n") }
-  X <- as.matrix2(X); class(X) <- "numeric"
+  X <- as.matrix2(X, verbose=verbose); class(X) <- "numeric"
   V0_ <- ncol(X)
   X_NA_mask <- apply(X, 2, function(x){any(x %in% c(NA, NaN, -Inf, Inf))})
   if (any(X_NA_mask)) {
