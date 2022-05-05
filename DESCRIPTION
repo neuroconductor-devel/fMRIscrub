@@ -52,6 +52,7 @@ Suggests:
     RNifti,
     ggplot2,
     ggpubr,
+    gsignal,
     fastICA,
     oro.nifti,
     gridExtra,
