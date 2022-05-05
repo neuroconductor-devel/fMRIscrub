@@ -122,7 +122,7 @@ DVARS <- function(
 
   cutoff_DVARS <- NULL
 
-  X <- as.matrix2(X)
+  X <- as.matrix2(X, verbose=verbose)
   T_ <- nrow(X); N_ <- ncol(X)
 
   cutoff <- list(DVARS=cutoff_DVARS, DPD=cutoff_DPD, ZD=cutoff_ZD)
