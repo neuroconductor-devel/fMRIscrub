@@ -94,7 +94,7 @@ FD <- function(
 
   # Compute FD.
   Xdiff <- apply(X, 2, diff, lag=lag)
-  FD <- c(rep(0, lag), colSums(abs(Xdiff)))
+  FD <- c(rep(0, lag), rowSums(abs(Xdiff)))
 
   # Revert units to `trans_units`.
   attr(FD, "units") <- trans_units
