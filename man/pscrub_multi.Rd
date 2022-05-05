@@ -2,7 +2,7 @@
 % Please edit documentation in R/pscrub_multi.R
 \name{pscrub_multi}
 \alias{pscrub_multi}
-\title{Compare multiple leverage measures with \code{pscrub_multi}}
+\title{Compare projection scrubbing measures with \code{pscrub_multi}}
 \usage{
 pscrub_multi(
   X,
@@ -25,12 +25,11 @@ pscrub_multi(
 \arguments{
 \item{X}{Wide numeric data matrix (\eqn{T} observations by \eqn{V} variables,
 \eqn{T << V}). If \code{X} represents an fMRI run, \eqn{T} should be the
-number of timepoints and \eqn{V} should be the number of brainordinate
-vertices/voxels. Projection scrubbing will measure the outlyingness of each
-row in \code{X}.}
+number of timepoints and \eqn{V} should be the number of vertices/voxels.
+Projection scrubbing will measure the outlyingness of each row in \code{X}.}
 
-\item{projection}{Leverage works by projecting the data onto directions likely to
-contain outlier information. Choose at least one of the following:
+\item{projection}{Projection scrubbing projects the data onto directions
+likely to contain outlier information. Choose at least one of the following:
 
 \describe{
 \item{\code{"PCA"}}{PCA using the top \eqn{k} PCs.}
@@ -110,11 +109,11 @@ helpful to detrend the components with \code{comps_mean_dt}; furthermore,
 the data nuisance regression does not address the potential existence of variance
 patterns in the components.
 
-Overall, we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
+Overall, for fMRI we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
 unless the data has been cleaned not only with a low-pass filter like
 DCT nuisance regression, but also with anatomical CompCor, ICA-FIX, or
 a similar data-driven strategy that takes into account common sources of
-artifactual trends such as respiration and heartbeat.}
+artifactual mean and variance trends such as motion and physiological cycles.}
 
 \item{comps_var_dt}{Stabilize the mean and variance of each
 projection component's timecourse prior to computing kurtosis and leverage?
@@ -137,17 +136,17 @@ helpful to detrend the components with \code{comps_mean_dt}; furthermore,
 the data nuisance regression does not address the potential existence of variance
 patterns in the components.
 
-Overall, we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
+Overall, for fMRI we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
 unless the data has been cleaned not only with a low-pass filter like
 DCT nuisance regression, but also with anatomical CompCor, ICA-FIX, or
 a similar data-driven strategy that takes into account common sources of
-artifactual trends such as respiration and heartbeat.}
+artifactual mean and variance trends such as motion and physiological cycles.}
 
 \item{kurt_quantile}{What quantile cutoff should be used to select the
 components? Default: \code{0.99}. Use \code{0} to select all high-variance
 components regardless of kurtosis value.
 
-We model each component as a length $T$ vector of Normal iid random variables,
+We model each component as a length \eqn{T} vector of Normal iid random variables,
 for which the distribution of kurtosis values can be approximated. The
 quantile is estimated based on this distribution.}
 
@@ -161,7 +160,7 @@ entries are:
 \item{verbose}{Print updates? Default: \code{FALSE}.}
 }}
 
-\item{get_dirs}{Do the projection directions need to be returned? This is the
+\item{get_dirs}{Should the projection directions be returned? This is the
 \eqn{V} matrix in PCA and \eqn{S} matrix in ICA. The default is \code{FALSE}
 to save memory. However, \code{get_dirs==TRUE} is required for \code{\link{artifact_images}}.}
 
@@ -234,6 +233,6 @@ If ICA was used, this will be a list with components:
 }
 \description{
 Calculates leverage to identify outliers in high-dimensional data.
-Can compute multiple kinds of leverage at once.
+Can get results using multiple kinds of projections.
 }
 \keyword{internal}

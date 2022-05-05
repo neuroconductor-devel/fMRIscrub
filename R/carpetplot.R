@@ -1,7 +1,7 @@
-#' carpetplot of data matrix
+#' Carpetplot
 #' 
 #' Plot a matrix with \code{graphics::image}. For fMRI data, this is the "carpetplot"
-#'  coined by (Power, 2017). The \code{graphics} package is required.
+#'  or grayplot coined by (Power, 2017). The \code{graphics} package is required.
 #' 
 #' @param x The \eqn{T x V} numeric data matrix, or a \code{"xifti"} object.
 #'  In the plot, the \eqn{T} index will increase from left to right, and the 

@@ -1,13 +1,12 @@
 #' Projection scrubbing
 #' 
-#' Projection scrubbing is a data-driven method for identifying artifactual
-#'  volumes in fMRI scans. It works by identifying component directions in the 
-#'  data likely to represent artifactual patterns, and then computing a 
-#'  composite measure for the amount of these signals at each volume. The 
-#'  projection can be PCA, ICA, or "fused PCA," and the composite measure is 
-#'  based on the linear model concept of leverage. Projection scrubbing can 
-#'  also be used for other outlier detection tasks involving high-dimensional 
-#'  data.
+#' Projection scrubbing is a data-driven method for identifying artifact-contaminated
+#'  volumes in fMRI. It works by identifying component 
+#'  directions in the data likely to represent patterns of burst noise, and then computing a 
+#'  composite measure of outlyingness based on leverage within these directions, 
+#'  at each volume. The projection can be PCA, ICA, or "fused PCA."
+#'  Projection scrubbing can also be used for other outlier detection tasks involving 
+#'  high-dimensional data.
 #' 
 #'  Refer to the projection scrubbing vignette for a demonstration and an
 #'  outline of the algorithm: \code{vignette("projection_scrubbing", package="fMRIscrub")}
@@ -15,7 +14,7 @@
 #' @section References:
 #'  \itemize{
 #'    \item{Mejia, A. F., Nebel, M. B., Eloyan, A., Caffo, B. & Lindquist, M. A. PCA leverage: outlier detection for high-dimensional functional magnetic resonance imaging data. Biostatistics 18, 521-536 (2017).}
-#'    \item{Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Projection scrubbing: a more effective, data-driven fMRI denoising method. (2021).}
+#'    \item{Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Less is more: balancing noise reduction and data retention in fMRI with projection scrubbing. (2021).}
 #'  }
 #' 
 #' @inheritParams pscrub_Params
@@ -105,7 +104,7 @@ pscrub = function(
   }
 
   # Run `pscrub_multi`.
-   psx <- pscrub_multi(
+  psx <- pscrub_multi(
     X=X, projection=projection, 
     nuisance=nuisance,
     center=center, scale=scale, comps_mean_dt=comps_mean_dt, comps_var_dt=comps_var_dt,

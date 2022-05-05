@@ -4,7 +4,7 @@
 \alias{dct_convert}
 \alias{dct2Hz}
 \alias{Hz2dct}
-\title{Convert between number of DCT bases and Hz of highpass filter}
+\title{DCT and frequency conversion}
 \usage{
 dct_convert(T_, TR, n = NULL, f = NULL)
 
@@ -27,9 +27,11 @@ Otherwise, if \code{f} was provided, the number of cosine bases is returned.
 The result should be rounded before passing to \code{\link{dct_bases}}
 }
 \description{
-Provide either \code{n} or \code{f} to calculate the other.
+Convert between number of DCT bases and Hz of highpass filter
 }
 \details{
+Provide either \code{n} or \code{f} to calculate the other.
+
 If only the total length of the scan is known, you can set that to \code{TR}
 and use \code{T_=1}.
 
