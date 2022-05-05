@@ -10,6 +10,6 @@ library(fMRIscrub)
 
 library(ggplot2)
 library(cowplot)
-library(ica)
+library(fastICA)
 
 test_check("fMRIscrub")

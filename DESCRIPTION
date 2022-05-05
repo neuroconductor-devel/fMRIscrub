@@ -1,7 +1,7 @@
 Package: fMRIscrub
 Type: Package
 Title: Scrubbing and Other Data Cleaning Routines for fMRI
-Version: 0.9.0
+Version: 0.10.0
 Authors@R: c(
     person(given = "Amanda",
            family = "Mejia",
@@ -55,8 +55,7 @@ Suggests:
     RNifti,
     ggplot2,
     ggpubr,
-    ica,
-    neurobase,
+    fastICA,
     oro.nifti,
     gridExtra,
     testthat (>= 3.0.0),
