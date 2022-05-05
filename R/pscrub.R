@@ -104,7 +104,7 @@ pscrub = function(
   }
 
   # Run `pscrub_multi`.
-   psx <- pscrub_multi(
+  psx <- pscrub_multi(
     X=X, projection=projection, 
     nuisance=nuisance,
     center=center, scale=scale, comps_mean_dt=comps_mean_dt, comps_var_dt=comps_var_dt,

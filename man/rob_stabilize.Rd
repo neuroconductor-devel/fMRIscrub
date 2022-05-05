@@ -4,7 +4,13 @@
 \alias{rob_stabilize}
 \title{Stabilize the center and scale of a timeseries robustly}
 \usage{
-rob_stabilize(x, center = TRUE, scale = TRUE, lmrob_method = "MM", rescale = TRUE)
+rob_stabilize(
+  x,
+  center = TRUE,
+  scale = TRUE,
+  lmrob_method = "MM",
+  rescale = TRUE
+)
 }
 \arguments{
 \item{x}{The timeseries to stabilize.}

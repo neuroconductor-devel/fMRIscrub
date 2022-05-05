@@ -26,9 +26,8 @@ pscrub(
 \arguments{
 \item{X}{Wide numeric data matrix (\eqn{T} observations by \eqn{V} variables,
 \eqn{T << V}). If \code{X} represents an fMRI run, \eqn{T} should be the
-number of timepoints and \eqn{V} should be the number of brainordinate
-vertices/voxels. Projection scrubbing will measure the outlyingness of each
-row in \code{X}.}
+number of timepoints and \eqn{V} should be the number of vertices/voxels.
+Projection scrubbing will measure the outlyingness of each row in \code{X}.}
 
 \item{projection}{One of the following: \code{"ICA"} (default), \code{"PCA"},
 or \code{"fusedPCA"}.}
@@ -91,11 +90,11 @@ helpful to detrend the components with \code{comps_mean_dt}; furthermore,
 the data nuisance regression does not address the potential existence of variance
 patterns in the components.
 
-Overall, we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
+Overall, for fMRI we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
 unless the data has been cleaned not only with a low-pass filter like
 DCT nuisance regression, but also with anatomical CompCor, ICA-FIX, or
 a similar data-driven strategy that takes into account common sources of
-artifactual trends such as respiration and heartbeat.}
+artifactual mean and variance trends such as motion and physiological cycles.}
 
 \item{comps_var_dt}{Stabilize the mean and variance of each
 projection component's timecourse prior to computing kurtosis and leverage?
@@ -118,11 +117,11 @@ helpful to detrend the components with \code{comps_mean_dt}; furthermore,
 the data nuisance regression does not address the potential existence of variance
 patterns in the components.
 
-Overall, we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
+Overall, for fMRI we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
 unless the data has been cleaned not only with a low-pass filter like
 DCT nuisance regression, but also with anatomical CompCor, ICA-FIX, or
 a similar data-driven strategy that takes into account common sources of
-artifactual trends such as respiration and heartbeat.}
+artifactual mean and variance trends such as motion and physiological cycles.}
 
 \item{PESEL}{Use \code{\link[pesel]{pesel}} to select the number of
 components? Default: \code{TRUE}. Otherwise, use the number of principal
@@ -132,7 +131,7 @@ components with above-average variance.}
 components? Default: \code{0.99}. Use \code{0} to select all high-variance
 components regardless of kurtosis value.
 
-We model each component as a length $T$ vector of Normal iid random variables,
+We model each component as a length \eqn{T} vector of Normal iid random variables,
 for which the distribution of kurtosis values can be approximated. The
 quantile is estimated based on this distribution.}
 
@@ -146,7 +145,7 @@ entries are:
 \item{verbose}{Print updates? Default: \code{FALSE}.}
 }}
 
-\item{get_dirs}{Do the projection directions need to be returned? This is the
+\item{get_dirs}{Should the projection directions be returned? This is the
 \eqn{V} matrix in PCA and \eqn{S} matrix in ICA. The default is \code{FALSE}
 to save memory. However, \code{get_dirs==TRUE} is required for \code{\link{artifact_images}}.}
 
@@ -217,14 +216,13 @@ If ICA was used, this will be a list with components:
 }
 }
 \description{
-Projection scrubbing is a data-driven method for identifying artifactual
-volumes in fMRI scans. It works by identifying component directions in the
-data likely to represent artifactual patterns, and then computing a
-composite measure for the amount of these signals at each volume. The
-projection can be PCA, ICA, or "fused PCA," and the composite measure is
-based on the linear model concept of leverage. Projection scrubbing can
-also be used for other outlier detection tasks involving high-dimensional
-data.
+Projection scrubbing is a data-driven method for identifying artifact-contaminated
+volumes in fMRI. It works by identifying component
+directions in the data likely to represent patterns of burst noise, and then computing a
+composite measure of outlyingness based on leverage within these directions,
+at each volume. The projection can be PCA, ICA, or "fused PCA."
+Projection scrubbing can also be used for other outlier detection tasks involving
+high-dimensional data.
 }
 \details{
 Refer to the projection scrubbing vignette for a demonstration and an
@@ -234,11 +232,12 @@ outline of the algorithm: \code{vignette("projection_scrubbing", package="fMRIsc
 
 \itemize{
 \item{Mejia, A. F., Nebel, M. B., Eloyan, A., Caffo, B. & Lindquist, M. A. PCA leverage: outlier detection for high-dimensional functional magnetic resonance imaging data. Biostatistics 18, 521-536 (2017).}
-\item{Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Projection scrubbing: a more effective, data-driven fMRI denoising method. (2021).}
+\item{Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Less is more: balancing noise reduction and data retention in fMRI with projection scrubbing. (2021).}
 }
 }
 
 \examples{
+library(fastICA)
 n_voxels = 1e4
 n_timepoints = 100
 X = matrix(rnorm(n_timepoints*n_voxels), ncol = n_voxels)

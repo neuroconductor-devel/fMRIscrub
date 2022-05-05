@@ -2,7 +2,7 @@
 % Please edit documentation in R/carpetplot.R
 \name{carpetplot}
 \alias{carpetplot}
-\title{carpetplot of data matrix}
+\title{Carpetplot}
 \usage{
 carpetplot(
   x,
@@ -55,7 +55,7 @@ The image or \code{NULL, invisibly} if a file was written.
 }
 \description{
 Plot a matrix with \code{graphics::image}. For fMRI data, this is the "carpetplot"
-coined by (Power, 2017). The \code{graphics} package is required.
+or grayplot coined by (Power, 2017). The \code{graphics} package is required.
 }
 \section{References}{
 
