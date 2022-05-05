@@ -42,3 +42,7 @@ We indeed use a "vignettes" directory.
 ## Tests
 
 Passes all the tests in `tests/testthat.R`.
+
+## First submisison
+
+This is the first submission since `fMRIscrub` was removed from CRAN on May 2, 2022 due to a package in Suggests being no longer available. The current submission resolves this issue. 
