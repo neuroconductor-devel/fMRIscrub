@@ -47,6 +47,7 @@ Suggests:
     corpcor,
     cowplot,
     ciftiTools,
+    gifti, 
     knitr,
     rmarkdown,
     RNifti,

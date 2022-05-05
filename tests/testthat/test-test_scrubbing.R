@@ -51,7 +51,7 @@ test_that("ciftiTools-related functions work", {
     skip("Connectome Workbench is not available.")
   }
 
-  cii_fname <- "../Data/rfMRI_REST1_LR_Atlas_MSMAll_6k.dtseries.nii"
+  cii_fname <- "../../Data/MSC/MSC.6k.dtseries.nii"
   if (!file.exists(cii_fname)) {
     skip("Could not find the CIFTI file.")
   }

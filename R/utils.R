@@ -98,6 +98,47 @@ scale_med <- function(mat, TOL=1e-8, drop_const=TRUE){
   mat
 }
 
+#' Infer fMRI data format
+#'
+#' @param BOLD The fMRI data
+#' @param verbose Print the format? Default: \code{FALSE}.
+#' @return The format: \code{"CIFTI"} file path, \code{"xifti"} object,
+#'  \code{"NIFTI"} file path, \code{"nifti"} object, or \code{"data"}.
+#' @keywords internal
+infer_BOLD_format <- function(BOLD, verbose=FALSE){
+
+  # Character vector: CIFTI or NIFTI
+  if (is.character(BOLD)) {
+    stopifnot(length(BOLD)==1)
+    if (endsWith(BOLD, ".dtseries.nii") | endsWith(BOLD, ".dscalar.nii")) {
+      format <- "CIFTI"
+    } else if (endsWith(BOLD, "gii")) {
+      format <- "GIFTI"
+    } else {
+      format <- "NIFTI"
+    }
+
+  } else if (inherits(BOLD, "xifti")) {
+    format <- "xifti"
+  } else if (inherits(BOLD, "niftiExtension") | inherits(BOLD, "niftiImage") | inherits(BOLD, "nifti")) {
+    format <- "nifti"
+  } else if (inherits(BOLD, "gifti")) {
+    format <- "gifti"
+
+  } else {
+    if (is.list(BOLD)) { stop("Unknown `BOLD` format.") }
+    if (is.matrix(BOLD)) { 
+      format <- "data"
+    } else if (length(dim(BOLD))==4) {
+      format <- "nifti"
+    } else {
+      stop("Unknown `BOLD` format.")
+    }
+  }
+  if (verbose) { cat("Inferred input format:", format, "\n") }
+  format
+}
+
 #' Wrapper to common functions for reading NIFTIs
 #' 
 #' Tries \code{RNifti::readNifti}, then \code{oro.nifti::readNIfTI}. If
@@ -119,24 +160,50 @@ read_nifti <- function(nifti_fname){
   }
 }
 
-#' Convert to \eqn{T} by \eqn{V} matrix
+#' Convert CIFTI, NIFTI, or GIFTI file input to \eqn{T} by \eqn{V} matrix
 #' 
-#' A \code{"xifti"} is VxT, whereas \code{scrub} and \code{grayplot} accept a
-#'  TxV matrix. This function calls \code{as.matrix} and transposes the data
-#'  if it is a \code{"xifti"}.
+#' Convert input data to \eqn{T} by \eqn{V} matrix. Reads in a CIFTI, NIFTI, 
+#'  or GIFTI file. Transposes CIFTI and xifti object input. Masks NIFTI and 
+#'  nifti object input.
 #' 
 #' @param x The object to coerce to a matrix
 #' @param sortSub Sort subcortex by labels? Default: \code{FALSE}
+#' @param verbose Print updates? Default: \code{FALSE}
 #' @return x as a matrix.
 #' @keywords internal
-as.matrix2 <- function(x, sortSub=FALSE) {
-  if (inherits(x, "xifti")) {
+as.matrix2 <- function(x, sortSub=FALSE, verbose=FALSE) {
+
+  format <- infer_BOLD_format(x)
+  if (format %in% c("CIFTI", "xifti")) {
+    if (format == "CIFTI") {
+      if (!requireNamespace("ciftiTools", quietly = TRUE)) {
+        stop("Package \"ciftiTools\" needed to read input data. Please install it", call. = FALSE)
+      }
+      x <- ciftiTools::read_cifti(x, brainstructures=ciftiTools::info_cifti(x)$cifti$brainstructures)
+    }
     if (sortSub && !is.null(x$data$subcort)) {
       x$data$subcort <- x$data$subcort[order(x$meta$subcort$labels),]
     }
     x <- t(as.matrix(x))
-  } else {
-    x <- as.matrix(x)
+  } else if (format %in% c("GIFTI", "gifti")) {
+    if (format == "GIFTI") {
+      if (!requireNamespace("gifti", quietly = TRUE)) {
+        stop("Package \"gifti\" needed to read `X`. Please install it", call. = FALSE)
+      }
+      x <- gifti::read_gifti(x)
+    }
+    x <- t(do.call(cbind, x$data))
+    if (verbose) {cat("GIFTI dimensions:\n"); print(dim(x))}
+  } else if (format %in% c("NIFTI", "nifti")) {
+    if (format == "NIFTI") {
+      x <- read_nifti(x)
+    }
+    if (verbose) {cat("Masking NIFTI by removing locations with constant zero, NA, or NaN.\n")}
+    z <- array(x %in% c(0, NA, NaN), dim=dim(x))
+    mask <- !apply(z, seq(3), all)
+    x <- matrix(x[rep(mask, dim(x)[4])], ncol=dim(x)[4])
+    x <- t(x)
+    if (verbose) {cat("NIFTI dimensions:\n"); print(dim(x))}
   }
 
   x
