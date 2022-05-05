@@ -1,7 +1,7 @@
 ## Test environments
 
 * Linux, R 4.0.4
-* Mac x64, R 4.0.3
+* Windows 10 x64, R 4.1.1
 
 ## R CMD check results
 
@@ -20,7 +20,7 @@
   See 'Writing portable packages' in the 'Writing R Extensions' manual.
    WARNING
   'qpdf' is needed for checks on size reduction of PDFs
-
+  
 > checking for old-style vignette sources ... NOTE
   Vignette sources only in 'inst/doc':
     'projection_scrubbing.rmd'
