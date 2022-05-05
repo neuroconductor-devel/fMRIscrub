@@ -60,7 +60,7 @@ Missing Rd-tags:
       fsl_bptf.Rd: \value
       noise_Params.Rd: \value
       pscrub_Params.Rd: \value
-      rob_scale.Rd: \value
+      rob_stabilize.Rd: \value
       summary.scrub_DVARS.Rd: \value
       summary.scrub_FD.Rd: \value
       summary.scrub_projection.Rd: \value
