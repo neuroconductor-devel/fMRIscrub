@@ -1,10 +1,11 @@
 ## Test environments
 
-* Windows 10 x64, R 4.0.4
+* Linux, R 4.0.4
 * Mac x64, R 4.0.3
 
 ## R CMD check results
 
+> checking compiled code ... NOTE
   Note: information on .o files for x64 is not available
   File 'C:/Users/damon/Desktop/fMRI/fMRIscrub.Rcheck/fMRIscrub/libs/x64/fMRIscrub.dll':
     Found 'abort', possibly from 'abort' (C), 'runtime' (Fortran)
@@ -20,114 +21,24 @@
    WARNING
   'qpdf' is needed for checks on size reduction of PDFs
 
-0 errors v | 1 warning x | 1 note x
+> checking for old-style vignette sources ... NOTE
+  Vignette sources only in 'inst/doc':
+    'projection_scrubbing.rmd'
+  A 'vignettes' directory is required as from R 3.1.0
+  and these will not be indexed nor checked
+
+0 errors v | 1 warning x | 2 notes x
+
+--------------------------------------------------------------------------------
+
+We indeed use a "vignettes" directory.
 
 `abort`, `exit` and `printf` is never called by our code.
 
 ## Downstream dependencies
 
-None.
+`templateICAr` works fine with this new version.
 
 ## Tests
 
-Passes all the tests in `tests/testthat.R`
-
-## Resubmission
-
-Please always explain all acronyms in the description text.
-
-* Done!
-
-If there are references describing the methods in your package, please
-add these in the description field of your DESCRIPTION file in the form
-authors (year) <doi:...>
-authors (year) <arXiv:...>
-authors (year, ISBN:...)
-or if those are not available: <https:...>
-with no space after 'doi:', 'arXiv:', 'https:' and angle brackets for
-auto-linking.
-(If you want to add a title as well please put it in quotes: "Title")
-
-* Added DOI and arXiv links in this format!
-
-Please add \value to .Rd files regarding exported methods and explain
-the functions results in the documentation. Please write about the
-structure of the output (class) and also what the output means. (If a
-function does not return a value, please document that too, e.g.
-\value{No return value, called for side effects} or similar)
-Missing Rd-tags:
-      data_CompCor_params.Rd: \value
-      fsl_bptf.Rd: \value
-      noise_Params.Rd: \value
-      pscrub_Params.Rd: \value
-      rob_scale.Rd: \value
-      summary.scrub_DVARS.Rd: \value
-      summary.scrub_FD.Rd: \value
-      summary.scrub_projection.Rd: \value
-
-* Done for all exported methods! (`*_Params` are internal)
-
-You have examples for unexported functions.
-Please either omit these examples or export these functions.
-Used ::: in documentation:
-      man/pscrub_multi.Rd:
-         psx = fMRIscrub:::pscrub_multi(X)
-
-* Removed example for unexpored function!
-
-Please always make sure to reset to user's options(), working directory
-or par() after you changed it in examples and vignettes and demos.
-e.g.:
-oldpar <- par(mfrow = c(1,2))
-...
-par(oldpar)
-e.g. inst/doc/projection_scrubbing.R
-
-* Fixed in the vignette!
-
-Please do not set a seed to a specific number within a function.
-
-* We added an argument `seed` to each applicable function to control whether
-  the seed is set or not, and if so, what value it is set to.
-
-## Second resubmission
-
-   Possibly misspelled words in DESCRIPTION:
-     incudes (27:38)
-
-* Fixed!
-
-## Third resubmission
-
-The package was accepted on CRAN, but we were later notified by email about the following issue:
-
-Version: 0.8.2
-Check: dependencies in R code
-Result: NOTE
-    Namespace in Imports field not imported from: ‘expm’
-     All declared Imports should be used.
-Flavors: r-devel-linux-x86_64-fedora-clang, r-devel-linux-x86_64-fedora-gcc
-
-The `expm` package has been removed from the Imports.
-
-## Fourth resubmission
-
-   Found the following (possibly) invalid URLs:
-     URL: https://travis-ci.com/github/mandymejia/fMRIscrub (moved to
-https://app.travis-ci.com:443/github/mandymejia/fMRIscrub)
-       From: README.md
-       Status: 301
-       Message: Moved Permanently
-
-* Fixed!
-
-## Fifth resubmission
-
-Submitting again after the CRAN holiday.
-
-## Sixth resubmission
-
-  code.cpp:158:41: error: call of overloaded ‘sqrt(int&)’ is ambiguous
-          err = arma::norm((uk-ukold)/sqrt(n));
-
-* Fixed!
+Passes all the tests in `tests/testthat.R`.

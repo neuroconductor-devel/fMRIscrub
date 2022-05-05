@@ -35,8 +35,8 @@ or one of the \code{trans_units} options.}
 are transformed to a spatial measurement representing the displacement on a
 sphere of radius \code{brain_radius} \code{trans_units}.
 
-If \code{brain_radius} is \code{NULL} (default), its value will be set to
-(the equivalent of) 50 mm.}
+If \code{brain_radius} is \code{NULL} (default), it will be set to
+50 mm.}
 
 \item{detrend}{Detrend each RP with the DCT before computing FD?
 Default: \code{FALSE}. Can be a number of DCT bases to use, or \code{TRUE}

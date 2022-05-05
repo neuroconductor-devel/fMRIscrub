@@ -1,4 +1,4 @@
-#' Cosine bases for the DCT
+#' Generate cosine bases for the DCT
 #' 
 #' @param T_ Length of timeseries
 #' @param n Number of cosine bases
@@ -13,6 +13,8 @@ dct_bases <- function(T_, n){
   b
 }
 
+#' DCT and frequency conversion
+#' 
 #' Convert between number of DCT bases and Hz of highpass filter
 #' 
 #' Provide either \code{n} or \code{f} to calculate the other.

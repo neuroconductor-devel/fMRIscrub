@@ -17,7 +17,7 @@ rob_trend <- function(x, nDCT=4, lmrob_method="MM", seed=0) {
   T_ <- length(x)
 
   nDCT <- as.numeric(nDCT)
-  stopifnot(nDCT == round(nDCT)); stopifnot(nDCT >= 0)
+  stopifnot(is_integer(nDCT)); stopifnot(nDCT >= 0)
   if (nDCT == 0) {
     mat <- data.frame(rep(1, T_))
     colnames(mat) <- "x_int"
@@ -55,8 +55,11 @@ rob_trend <- function(x, nDCT=4, lmrob_method="MM", seed=0) {
 #' 
 #' @export
 #' 
-rob_scale <- function(x, center=TRUE, scale=TRUE, lmrob_method="MM", rescale=TRUE) {
+rob_stabilize <- function(x, center=TRUE, scale=TRUE, lmrob_method="MM", rescale=TRUE) {
+  EPS <- 1e-6
+
   if (length(x) < 5) { warning("Timeseries too short to variance stabilize."); return(x) }
+  if (any(is.na(x) | is.nan(x))) { stop("NA/NaN values in `x` are not supported.") }
   x_mean <- mean(x); x_var <- var(x)
   x <- as.numeric(scale(x))
 
@@ -66,7 +69,7 @@ rob_scale <- function(x, center=TRUE, scale=TRUE, lmrob_method="MM", rescale=TRU
     center <- 0
   } else {
     center <- as.numeric(center)
-    stopifnot(length(center)==1 && center >= 0)
+    stopifnot(is_integer(center, nneg=TRUE))
   }
 
   if (isTRUE(scale)) {
@@ -75,7 +78,7 @@ rob_scale <- function(x, center=TRUE, scale=TRUE, lmrob_method="MM", rescale=TRU
     scale <- 0
   } else {
     scale <- as.numeric(scale)
-    stopifnot(length(scale)==1 && scale >= 0)
+    stopifnot(is_integer(scale, nneg=TRUE))
   }
 
   if (center > 0) {
@@ -83,13 +86,13 @@ rob_scale <- function(x, center=TRUE, scale=TRUE, lmrob_method="MM", rescale=TRU
     x <- scale(x - m)
   }
 
-  const_mask <- abs(x) < 1e-6
+  const_mask <- abs(x) < EPS
 
   if (scale > 0) {
     x2 <- ifelse(const_mask, NA, x)
     s <- as.numeric(rob_trend(log(x2^2), nDCT=scale, lmrob_method)$fitted.values)
     s <- sqrt(exp(s))
-    if (any(s < 1e-6)) { stop("Error: near-constant variance detected.") } # TEMPORARY
+    if (any(s < EPS)) { stop("Error: near-constant variance detected.") } # TEMPORARY
     x[!const_mask] <- x[!const_mask] / s
     x <- scale(x)
   }

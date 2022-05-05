@@ -1,11 +1,11 @@
-#' Compare multiple leverage measures with \code{pscrub_multi}
+#' Compare projection scrubbing measures with \code{pscrub_multi}
 #' 
 #' Calculates leverage to identify outliers in high-dimensional data. 
-#'  Can compute multiple kinds of leverage at once. 
+#'  Can get results using multiple kinds of projections.
 #' 
 #' @inheritParams pscrub_Params
-#' @param projection Leverage works by projecting the data onto directions likely to 
-#'  contain outlier information. Choose at least one of the following:
+#' @param projection Projection scrubbing projects the data onto directions 
+#'  likely to contain outlier information. Choose at least one of the following:
 #' 
 #'  \describe{
 #'    \item{\code{"PCA"}}{PCA using the top \eqn{k} PCs.}
@@ -190,7 +190,7 @@ pscrub_multi = function(
     comps_mean_dt <- 0
   } else {
     comps_mean_dt <- as.numeric(comps_mean_dt)
-    stopifnot(comps_mean_dt >= 0)
+    stopifnot(is_integer(comps_mean_dt, nneg=TRUE))
   }
   if (isTRUE(comps_var_dt)) {
     comps_var_dt <- 4
@@ -198,7 +198,7 @@ pscrub_multi = function(
     comps_var_dt <- 0
   } else {
     comps_var_dt <- as.numeric(comps_var_dt)
-    stopifnot(comps_var_dt >= 0)
+    stopifnot(is_integer(comps_var_dt, nneg=TRUE))
   }
   comps_dt <- (comps_mean_dt > 0) || (comps_var_dt > 0)
   kurt_quantile <- as.numeric(kurt_quantile)
@@ -214,7 +214,7 @@ pscrub_multi = function(
   get_dirs <- as.logical(get_dirs); stopifnot(isTRUE(get_dirs) || isFALSE(get_dirs))
   full_PCA <- as.logical(full_PCA); stopifnot(isTRUE(full_PCA) || isFALSE(full_PCA))
   get_outliers <- as.logical(get_outliers); stopifnot(isTRUE(get_outliers) || isFALSE(get_outliers))
-  cutoff <- as.numeric(cutoff); stopifnot(cutoff >= 0)
+  cutoff <- as.numeric(cutoff); stopifnot(is_integer(cutoff, nneg=TRUE))
   verbose <- as.logical(verbose); stopifnot(isTRUE(verbose) || isFALSE(verbose))
 
   # ----------------------------------------------------------------------------
@@ -248,9 +248,13 @@ pscrub_multi = function(
   if (any(valid_projection_PESEL %in% projection)) {
     if (verbose) { cat("Computing PESEL.\n") }
     if (!is.null(seed)) {
-      nPCs_PESEL <- with(set.seed(seed), pesel::pesel(t(X), npc.max=ceiling(T_/2), method="homogenous")$nPCs)
+      nPCs_PESEL <- with(set.seed(seed), pesel::pesel(
+        t(X), npc.max=ceiling(T_/2), method="homogenous"
+      )$nPCs)
     } else {
-      nPCs_PESEL <- pesel::pesel(t(X), npc.max=ceiling(T_/2), method="homogenous")$nPCs
+      nPCs_PESEL <- pesel::pesel(
+        t(X), npc.max=ceiling(T_/2), method="homogenous"
+      )$nPCs
     }
     if (nPCs_PESEL == 1) {
       warning("PESEL estimates that there is only one component. Using two.")
@@ -259,9 +263,10 @@ pscrub_multi = function(
     maxK_PCA <- max(maxK_PCA, nPCs_PESEL)
   }
 
-  # Compute PCA. (Even if only ICA is being used, since we need `nComps`)
+  # Compute PCA.
   if ("PCA" %in% base_projection || "fusedPCA" %in% base_projection) {
     if (verbose) { cat("Computing PCA.\n") }
+    # Compute the SVD of X or XXt.
     if (get_dirs || "fusedPCA" %in% base_projection) {
       out$PCA <- tryCatch(
         { svd(X)[c("u", "d", "v")] },
@@ -313,12 +318,13 @@ pscrub_multi = function(
       out$PCA$highkurt <- high_kurtosis(out$PCA$U[, seq(maxK_PCA), drop=FALSE], kurt_quantile=kurt_quantile, min_1=TRUE)
     }
   } else {
+    # If computing ICA but not PCA or fusedPCA, just get the nPCs.
     if (any(valid_projection_PESEL %in% projection)) {
       out$PCA$nPCs_PESEL <- nPCs_PESEL
     }
     if (any(valid_projection_avgvar %in% projection)) {
       eig <- svd(tcrossprod(X))$d
-      out$PCA$nPCs_avgvar <- max(1, sum(eig > eig))
+      out$PCA$nPCs_avgvar <- max(1, sum(eig > mean(eig)))
     }
   }
 
@@ -361,6 +367,15 @@ pscrub_multi = function(
     out$fusedPCA$highkurt <- high_kurtosis(out$fusedPCA$U, kurt_quantile=kurt_quantile)
   }
 
+  # Remove extra PCA information.
+  if (!is.null(out$PCA$U) && !full_PCA) {
+    out$PCA$U <- out$PCA$U[, seq(maxK_PCA), drop=FALSE]
+    out$PCA$D <- out$PCA$D[seq(maxK_PCA), drop=FALSE]
+    if (!is.null(out$PCA$V)) { 
+      out$PCA$V <- out$PCA$V[, seq(maxK_PCA), drop=FALSE]
+    }
+  }
+
   # Compute ICA
   if ("ICA" %in% base_projection) {
     maxK_ICA <- max(as.numeric(list(
@@ -382,7 +397,7 @@ pscrub_multi = function(
     names(out$ICA)[names(out$ICA)=="A"] <- "M"
     out$ICA$M <- t(out$ICA$M)
 
-    # Issue due to rank.
+    # Issue due to rank. Does this still happen w/ fastICA?
     if (ncol(out$ICA$M) < maxK_ICA) {
       cat("Rank issue with ICA: adding constant zero columns.\n")
       K_missing <- maxK_ICA - ncol(out$ICA$M)
@@ -397,32 +412,23 @@ pscrub_multi = function(
     if(!get_dirs){ out$ICA$S <- NULL }
   }
 
-  # Remove PCA information if only ICA is being used.
-  # Do this after PCA info was given to fusedPCA
-  if (!("PCA" %in% base_projection)) {
-    out$PCA$U <- out$PCA$D <- out$PCA$V <- NULL
-  } else if (!is.null(out$PCA$U)) {
-    # Remove smaller PCs.
-    if (!full_PCA) {
-      out$PCA$U <- out$PCA$U[, seq(maxK_PCA), drop=FALSE]
-      out$PCA$D <- out$PCA$D[seq(maxK_PCA), drop=FALSE]
-      if (!is.null(out$PCA$V)) { 
-        out$PCA$V <- out$PCA$V[, seq(maxK_PCA), drop=FALSE]
-      }
-    }
-  }
-
   if (comps_dt) {
     if (!is.null(out$PCA$U)) { 
-      out$PCA$U_dt <- apply(out$PCA$U, 2, rob_scale, center=comps_mean_dt, scale=comps_var_dt)
+      out$PCA$U_dt <- apply(
+        out$PCA$U, 2, rob_stabilize, center=comps_mean_dt, scale=comps_var_dt
+      )
       out$PCA$highkurt_dt <- high_kurtosis(out$PCA$U_dt, kurt_quantile=kurt_quantile)
     }
     if (!is.null(out$fusedPCA$U)) { 
-      out$fusedPCA$U_dt <- apply(out$fusedPCA$U, 2, rob_scale, center=comps_mean_dt, scale=comps_var_dt)
+      out$fusedPCA$U_dt <- apply(
+        out$fusedPCA$U, 2, rob_stabilize, center=comps_mean_dt, scale=comps_var_dt
+      )
       out$fusedPCA$highkurt_dt <- high_kurtosis(out$fusedPCA$U_dt, kurt_quantile=kurt_quantile)
     }
     if (!is.null(out$ICA$M)) { 
-      out$ICA$M_dt <- apply(out$ICA$M, 2, rob_scale, center=comps_mean_dt, scale=comps_var_dt)
+      out$ICA$M_dt <- apply(
+        out$ICA$M, 2, rob_stabilize, center=comps_mean_dt, scale=comps_var_dt
+      )
       out$ICA$highkurt_dt <- high_kurtosis(out$ICA$M_dt, kurt_quantile=kurt_quantile)
     }
   }
@@ -461,6 +467,7 @@ pscrub_multi = function(
     )
 
     if (grepl("kurt", proj_ii) && length(Comps_ii) < 1) {
+      # No high-kurtosis components: no outliers!
       result_ii <- list(
         meas = rep(0, T_), 
         cut = NA, 
