@@ -25,7 +25,7 @@ library(oro.nifti)
 In this vignette we will highlight the use of projection scrubbing for identifying and removing contaminated volumes from fMRI scans. Projection scrubbing works by identifying component directions in the data likely to represent transient artifacts, and then computing a composite measure for the amount of these signals at each volume. The projection can be PCA, ICA, or "fused PCA," and the composite measure is based on the linear model concept of leverage. (An earlier version of projection scrubbing was named "PCA leverage"). Like other scrubbing methods, it is designed to detect burst noise caused by artifact sources such as subject head motion. Projection scrubbing can be cited with the following papers: 
 
 * Mejia, A. F., Nebel, M. B., Eloyan, A., Caffo, B. & Lindquist, M. A. PCA leverage: outlier detection for high-dimensional functional magnetic resonance imaging data. Biostatistics 18, 521-536 (2017).
-* Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Less is more: balancing noise reduction and data retention in fMRI with projection scrubbing. (2022+).
+* Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Less is more: balancing noise reduction and data retention in fMRI with projection scrubbing (2022+).
 
 Citations for the other routines included in `fMRIscrub` can be found on their respective documentation pages, e.g. `help(fMRIscrub::DVARS)`.
 
