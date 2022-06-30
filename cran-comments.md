@@ -1,7 +1,7 @@
 ## Test environments
 
-* Linux, R 4.0.4
-* Mac, R 4.1.1
+* Linux x86_64-pc-linux-gnu, R 4.0.4
+* Mac x86_64-apple-darwin17.0, R 4.1.1
 
 ## R CMD check results
 
