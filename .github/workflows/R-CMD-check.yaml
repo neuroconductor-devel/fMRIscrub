@@ -39,15 +39,15 @@ jobs:
           http-user-agent: ${{ matrix.config.http-user-agent }}
           use-public-rspm: true
 
-      - uses: r-lib/actions/setup-r-dependencies@v1
-        with:
-          extra-packages: rcmdcheck
-
       - name: Install dependencies
               run: |
                 install.packages(c("remotes","testthat"),dependencies=TRUE)
                 remotes::install_github("statsmaths/glmgen/R_pkg/glmgen")
               shell: Rscript {0}
+
+      - uses: r-lib/actions/setup-r-dependencies@v1
+        with:
+          extra-packages: rcmdcheck
 
       - uses: r-lib/actions/check-r-package@v1
 
