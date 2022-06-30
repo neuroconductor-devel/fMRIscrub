@@ -23,7 +23,7 @@ jobs:
 
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
-          extra-packages: covr, any::rcmdcheck, glmgen=?ignore-before-r=5.0.0
+          extra-packages: covr, any::rcmdcheck, glmgen=?ignore
 
       - name: Test coverage
         run: covr::codecov()
