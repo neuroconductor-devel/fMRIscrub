@@ -30,7 +30,7 @@ jobs:
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           cache: FALSE
-          extra-packages: any::rcmdcheck, glmgen=?ignore
+          extra-packages: covr, any::rcmdcheck, glmgen=?ignore
 
       - name: Test coverage
         run: covr::codecov()
