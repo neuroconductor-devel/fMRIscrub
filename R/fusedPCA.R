@@ -23,7 +23,7 @@ fusedPCA_check_kwargs <- function(X, X.svd, solve_directions, K, lambda, niter_m
 
 #' Fused PCA
 #' 
-#' From: https://github.com/Lei-D/fusedPCA
+#' From: https://github.com/Lei-D/fusedPCA . Requires the \code{glmgen} package.
 #'
 #' @param X A numerical data matrix (observations x variables).
 #' @param X.svd (Optional) The svd decomposition of X. Save time by providing
@@ -41,7 +41,6 @@ fusedPCA_check_kwargs <- function(X, X.svd, solve_directions, K, lambda, niter_m
 #'
 #' @return SVD The fused SVD decomposition of X (list with u, d, v).
 #'
-#' @importFrom glmgen trendfilter
 #' @examples
 #' U = matrix(rnorm(100*3),ncol=3)
 #' U[20:23,1] = U[20:23,1] + 3
@@ -72,6 +71,10 @@ fusedPCA_check_kwargs <- function(X, X.svd, solve_directions, K, lambda, niter_m
 fusedPCA <- function(
   X, X.svd=NULL, solve_directions = TRUE, K=NULL, lambda=.5,
   niter_max = 1000, TOL = 1e-8, verbose=FALSE){
+
+  if (!requireNamespace("glmgen", quietly = TRUE)) {
+    stop("Package \"glmgen\" needed. Please install it from github: statsmaths/glmgen/R_pkg/glmgen.", call. = FALSE)
+  }
 
   # Check arguments.
   fusedPCA_check_kwargs(X, X.svd, solve_directions, K, lambda, niter_max, TOL, verbose)

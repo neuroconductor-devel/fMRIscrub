@@ -41,7 +41,7 @@ Default is 0.5 . Can be NULL (lets algorithm decide).}
 SVD The fused SVD decomposition of X (list with u, d, v).
 }
 \description{
-From: https://github.com/Lei-D/fusedPCA
+From: https://github.com/Lei-D/fusedPCA . Requires the \code{glmgen} package.
 }
 \section{References}{
 
