@@ -21,12 +21,6 @@ jobs:
         with:
           use-public-rspm: true
 
-      - name: Install dependencies
-              run: |
-                install.packages(c("remotes","testthat"),dependencies=TRUE)
-                remotes::install_github("statsmaths/glmgen/R_pkg/glmgen")
-              shell: Rscript {0}
-
       - uses: r-lib/actions/setup-r-dependencies@v2
         with:
           extra-packages: covr, any::rcmdcheck, glmgen=?ignore

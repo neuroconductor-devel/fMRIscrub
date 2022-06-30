@@ -52,22 +52,3 @@ From: https://github.com/Lei-D/fusedPCA . Requires the \code{glmgen} package.
 }
 }
 
-\examples{
-U = matrix(rnorm(100*3),ncol=3)
-U[20:23,1] = U[20:23,1] + 3
-U[40:43,2] = U[40:43,2] - 2
-U = svd(U)$u
-D = diag(c(10,5,1))
-V = svd(matrix(rnorm(3*20),nrow=20))$u
-X = U \%*\% D \%*\% t(V)
-out3 = fusedPCA(X, K=3, lambda=.75)
-matplot(out3$u, ty='l')
-out3$d
-plot(rowSums(out3$u^2), ty='l')
-
-# Orthonormalized
-out3_svd = svd(out3$u)
-matplot(out3_svd$u, ty='l')
-out3_svd$d
-plot(rowSums(out3_svd$u^2), ty='l')
-}
