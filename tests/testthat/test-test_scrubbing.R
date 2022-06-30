@@ -3,7 +3,7 @@ test_that("pscrub works", {
     Dat1,
     projection = c("ICA", "ICA_kurt"), # "all"
   ))
-  testthat::expect_warning(fMRIscrub:::plot.scrub_projection_multi(psx))
+  fMRIscrub:::plot.scrub_projection_multi(psx)
 
   # fusedPCA
   psx <- testthat::expect_warning(fMRIscrub:::pscrub_multi(
