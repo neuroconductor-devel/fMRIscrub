@@ -43,6 +43,12 @@ jobs:
         with:
           extra-packages: rcmdcheck
 
+      - name: Install dependencies
+              run: |
+                install.packages(c("remotes","testthat"),dependencies=TRUE)
+                remotes::install_github("statsmaths/glmgen/R_pkg/glmgen")
+              shell: Rscript {0}
+
       - uses: r-lib/actions/check-r-package@v1
 
       - name: Show testthat output
