@@ -51,7 +51,7 @@ non-time-series data because the observations are not temporally related.
 Additional nuisance regressors can be specified like so:
 \code{cbind(1, dct_bases(nrow(x), 4), more_nuisance)}.}
 
-\item{center}{Center the columns of the data by their medians, and scale the
+\item{center, scale}{Center the columns of the data by their medians, and scale the
 columns of the data by their median absolute deviations (MADs)? Default: \code{TRUE}.
 Centering is necessary for computing the projections, so if \code{center} is
 \code{FALSE}, the data must already be centered.
@@ -60,43 +60,7 @@ Note that centering and scaling occur after nuisance regression, so even if
 \code{center} is \code{FALSE}, the data will be centered on the means if
 the nuisance regression included an intercept term, as it does by default.}
 
-\item{scale}{Center the columns of the data by their medians, and scale the
-columns of the data by their median absolute deviations (MADs)? Default: \code{TRUE}.
-Centering is necessary for computing the projections, so if \code{center} is
-\code{FALSE}, the data must already be centered.
-
-Note that centering and scaling occur after nuisance regression, so even if
-\code{center} is \code{FALSE}, the data will be centered on the means if
-the nuisance regression included an intercept term, as it does by default.}
-
-\item{comps_mean_dt}{Stabilize the mean and variance of each
-projection component's timecourse prior to computing kurtosis and leverage?
-These arguments should be \code{TRUE}, \code{FALSE} (default), or the number
-of DCT bases to use for detrending (\code{TRUE} will use 4).
-Note that these arguments affect the projection components and not the data
-itself. Also, if variance-stabilizing but not mean-stabilizing,
-the components must already be expected to be mean-stabilized, for example
-if the data was rigorously detrended; otherwise, the results will be invalid.
-
-Slow-moving mean and variance patterns in the components will interfere with
-the roles of kurtosis and leverage in identifying outliers. While
-\code{nuisance} can be used to detrend the data, this nuisance regression is
-estimated \emph{non-robustly}, since a robust model takes too long to estimate
-at each data location. On the other hand, \code{comps_mean_dt} and
-\code{comps_var_dt} can be used to apply a \emph{robust} nuisance regression at each
-component, since there are much fewer components than original data locations.
-Thus, even if the data has been detrended with \code{nuisance} it may be
-helpful to detrend the components with \code{comps_mean_dt}; furthermore,
-the data nuisance regression does not address the potential existence of variance
-patterns in the components.
-
-Overall, for fMRI we recommend enabling \code{comps_mean_dt} and \code{comps_var_dt}
-unless the data has been cleaned not only with a low-pass filter like
-DCT nuisance regression, but also with anatomical CompCor, ICA-FIX, or
-a similar data-driven strategy that takes into account common sources of
-artifactual mean and variance trends such as motion and physiological cycles.}
-
-\item{comps_var_dt}{Stabilize the mean and variance of each
+\item{comps_mean_dt, comps_var_dt}{Stabilize the mean and variance of each
 projection component's timecourse prior to computing kurtosis and leverage?
 These arguments should be \code{TRUE}, \code{FALSE} (default), or the number
 of DCT bases to use for detrending (\code{TRUE} will use 4).

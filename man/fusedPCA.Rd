@@ -51,7 +51,7 @@ Public License: http://www.gnu.org/licenses/ .
 \section{References}{
 
 \itemize{
-\item{Kim, S.-J., Koh, K., Boyd, S. & Gorinevsky, D. \$\\ell_1\$ Trend Filtering. SIAM Rev. 51, 339-360 (2009).}
+\item{Kim, S.-J., Koh, K., Boyd, S. & Gorinevsky, D. l1 Trend Filtering. SIAM Rev. 51, 339-360 (2009).}
 \item{Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Less is more: balancing noise reduction and data retention in fMRI with projection scrubbing (2022).}
 \item{Tibshirani, R. J. Adaptive piecewise polynomial estimation via trend filtering. The Annals of Statistics 42, 285-323 (2014).}
 }
