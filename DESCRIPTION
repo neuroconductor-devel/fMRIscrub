@@ -47,7 +47,6 @@ Suggests:
     cowplot,
     ciftiTools,
     gifti, 
-    glmgen,
     knitr,
     rmarkdown,
     RNifti,

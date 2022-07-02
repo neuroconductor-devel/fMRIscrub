@@ -72,16 +72,6 @@ We model each component as a length \eqn{T} vector of Normal iid random variable
 for which the distribution of kurtosis values can be approximated. The
 quantile is estimated based on this distribution.}
 
-\item{fusedPCA_kwargs}{Arguments to \code{\link{fusedPCA}} in list form. Valid
-entries are:
-
-\describe{
-\item{lambda}{Trend-filtering parameter. Default: \code{5}.}
-\item{niter_max}{Maximum number of iterations. Default: \code{1000}.}
-\item{TOL}{Convergence tolerance parameter. Default: \code{1e-8}.}
-\item{verbose}{Print updates? Default: \code{FALSE}.}
-}}
-
 \item{get_dirs}{Should the projection directions be returned? This is the
 \eqn{V} matrix in PCA and \eqn{S} matrix in ICA. The default is \code{FALSE}
 to save memory. However, \code{get_dirs==TRUE} is required for \code{\link{artifact_images}}.}

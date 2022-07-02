@@ -1,6 +1,6 @@
-# 0.11.0
+# 0.11.1
 
-* Switch back to non-CPP code for `fusedPCA`
+* Remove `fusedPCA`
 * Remove unused dependencies
 
 # 0.10.0

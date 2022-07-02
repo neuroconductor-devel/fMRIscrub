@@ -13,7 +13,6 @@ pscrub_multi(
   comps_mean_dt = FALSE,
   comps_var_dt = FALSE,
   kurt_quantile = 0.99,
-  fusedPCA_kwargs = NULL,
   get_dirs = FALSE,
   full_PCA = FALSE,
   get_outliers = TRUE,
@@ -36,10 +35,6 @@ likely to contain outlier information. Choose at least one of the following:
 \item{\code{"PCA_kurt"}}{PCA using the high-kurtosis PCs among the top \eqn{k}.}
 \item{\code{"PCA2"}}{PCA using the top \eqn{k2} PCs.}
 \item{\code{"PCA2_kurt"}}{PCA using the high-kurtosis PCs among the top \eqn{k2}.}
-\item{\code{"fusedPCA"}}{fusedPCA using the top \eqn{k} fused PCs.}
-\item{\code{"fusedPCA_kurt"}}{fusedPCA using the high-kurtosis fused PCs among the top \eqn{k}.}
-\item{\code{"fusedPCA2"}}{fusedPCA using the top \eqn{k2} fused PCs.}
-\item{\code{"fusedPCA2_kurt"}}{fusedPCA using the high-kurtosis fused PCs among the top \eqn{k2}.}
 \item{\code{"ICA"}}{ICA using the top \eqn{k} ICs.}
 \item{\code{"ICA_kurt"}}{ICA using the high-kurtosis ICs among the top \eqn{k}.}
 \item{\code{"ICA2"}}{ICA using the top \eqn{k2} ICs.}
@@ -114,16 +109,6 @@ We model each component as a length \eqn{T} vector of Normal iid random variable
 for which the distribution of kurtosis values can be approximated. The
 quantile is estimated based on this distribution.}
 
-\item{fusedPCA_kwargs}{Arguments to \code{\link{fusedPCA}} in list form. Valid
-entries are:
-
-\describe{
-\item{lambda}{Trend-filtering parameter. Default: \code{5}.}
-\item{niter_max}{Maximum number of iterations. Default: \code{1000}.}
-\item{TOL}{Convergence tolerance parameter. Default: \code{1e-8}.}
-\item{verbose}{Print updates? Default: \code{FALSE}.}
-}}
-
 \item{get_dirs}{Should the projection directions be returned? This is the
 \eqn{V} matrix in PCA and \eqn{S} matrix in ICA. The default is \code{FALSE}
 to save memory. However, \code{get_dirs==TRUE} is required for \code{\link{artifact_images}}.}
@@ -171,17 +156,6 @@ This will be a list with components:
 where \code{Q} is the number of PCs selected by PESEL or of above-average variance (or the greater of the two if both were used).
 If PCA was not used, all entries except \code{nPCs_PESEL} and/or \code{nPCs_avgvar} will not be included, depending on which
 method(s) was used to select the number of PCs.
-}
-\item{fusedPCA}{
-If fusedPCA was used, this will be a list with components:
-\describe{
-\item{U}{The \eqn{T} by \eqn{Q} PC score matrix.}
-\item{D}{The standard deviation of each PC.}
-\item{V}{The \eqn{P} by \eqn{Q} PC directions matrix. Included only if \code{get_dirs}}
-\item{highkurt}{The length \code{Q} logical vector indicating scores of high kurtosis.}
-\item{U_dt}{Detrended components of \code{U}. Included only if components were mean- or variance-detrended.}
-\item{highkurt}{The length \code{Q} logical vector indicating detrended scores of high kurtosis. Included only if components were mean- or variance-detrended.}
-}
 }
 \item{ICA}{
 If ICA was used, this will be a list with components:
