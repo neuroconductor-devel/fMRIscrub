@@ -69,7 +69,7 @@ fft_detrend <- function(X, N) {
   Y <- mvfft(X)
   Y[seq(N),] <- 0
   Y[seq(T_-N+1, T_),] <- 0
-  Re(stats::mvfft(Y, inverse=TRUE))
+  Re(stats::mvfft(Y, inverse=TRUE)) / T_
 }
 
 #' Detrending with DCT or FFT
