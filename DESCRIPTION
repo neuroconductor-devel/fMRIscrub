@@ -1,7 +1,7 @@
 Package: fMRIscrub
 Type: Package
 Title: Scrubbing and Other Data Cleaning Routines for fMRI
-Version: 0.10.1
+Version: 0.11.1
 Authors@R: c(
     person(given = "Amanda",
            family = "Mejia",
@@ -41,30 +41,24 @@ Imports:
     pesel,
     robustbase,
     stats,
-    utils,
-    Rcpp
+    utils
 Suggests:
     corpcor,
     cowplot,
     ciftiTools,
     gifti, 
+    glmgen,
     knitr,
     rmarkdown,
     RNifti,
     ggplot2,
-    ggpubr,
     gsignal,
     fastICA,
     oro.nifti,
-    gridExtra,
     testthat (>= 3.0.0),
     covr
-LinkingTo: 
-    Rcpp,
-    RcppArmadillo
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.0
 URL: https://github.com/mandymejia/fMRIscrub
 BugReports: https://github.com/mandymejia/fMRIscrub/issues
 LazyData: true
-VignetteBuilder: knitr
