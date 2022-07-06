@@ -52,3 +52,24 @@ We have removed the `glmgen` dependency.
     checkRd: (-1) fusedPCA.Rd:49: Escaped LaTeX specials: \$ \$
 
 We have remoted the escaped LaTeX specials.
+
+# Resubmission 2
+
+The previous submission failed without suggested packages:
+
+  * checking examples ... [3s] ERROR
+  Running examples in 'fMRIscrub-Ex.R' failed
+  The error most likely occurred in:
+
+  > base::assign(".ptime", proc.time(), pos = "CheckExEnv")
+  > ### Name: bandstop_filter
+  > ### Title: Bandstop filter
+  > ### Aliases: bandstop_filter
+  >
+  > ### ** Examples
+  >
+  > library(gsignal)
+  Error in library(gsignal) : there is no package called 'gsignal'
+  Execution halted
+
+We have fixed the issue by checking for availability of suggested packages prior to running examples.
