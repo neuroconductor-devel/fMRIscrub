@@ -82,7 +82,8 @@
 #' @importFrom pesel pesel
 #' @importFrom robustbase rowMedians
 #' @importFrom stats mad qnorm var setNames
-#'
+#' @importFrom fMRItools is_integer is_constant nuisance_regression as.matrix_ifti dct_bases validate_design_mat
+#' 
 #' @keywords internal
 #' 
 pscrub_multi = function(
@@ -100,7 +101,7 @@ pscrub_multi = function(
 
   # `X` ------------------------------------------------------------------------
   if (verbose) { cat("Checking for missing, infinite, and constant data.\n") }
-  X <- as.matrix2(X, verbose=verbose); class(X) <- "numeric"
+  X <- as.matrix_ifti(X, verbose=verbose); class(X) <- "numeric"
   V0_ <- ncol(X)
   X_NA_mask <- apply(X, 2, function(x){any(x %in% c(NA, NaN, -Inf, Inf))})
   if (any(X_NA_mask)) {
@@ -111,7 +112,7 @@ pscrub_multi = function(
     )
     X <- X[,!X_NA_mask,drop=FALSE]
   }
-  X_const_mask <- apply(X, 2, is_constant)
+  X_const_mask <- apply(X, 2, fMRItools::is_constant)
   if (any(X_const_mask)) {
     if (all(X_const_mask)) { stop("All data columns are constant.\n") }
     warning(
@@ -172,8 +173,8 @@ pscrub_multi = function(
   }
   do_nuisance <- !(is.null(nuisance) || isFALSE(nuisance) || identical(nuisance, 0))
   if (do_nuisance) { 
-    nuisance <- check_design_matrix(nuisance, T_)
-    design_const_mask <- apply(nuisance, 2, is_constant)
+    nuisance <- validate_design_mat(nuisance, T_)
+    design_const_mask <- apply(nuisance, 2, fMRItools::is_constant)
     if (!any(design_const_mask)) {
       if (!any(abs(apply(X, 2, mean)) < 1e-8)) {
         warning("No intercept detected in `design`, yet the data are not centered.")
@@ -190,7 +191,7 @@ pscrub_multi = function(
     comps_mean_dt <- 0
   } else {
     comps_mean_dt <- as.numeric(comps_mean_dt)
-    stopifnot(is_integer(comps_mean_dt, nneg=TRUE))
+    stopifnot(fMRItools::is_integer(comps_mean_dt, nneg=TRUE))
   }
   if (isTRUE(comps_var_dt)) {
     comps_var_dt <- 4
@@ -198,7 +199,7 @@ pscrub_multi = function(
     comps_var_dt <- 0
   } else {
     comps_var_dt <- as.numeric(comps_var_dt)
-    stopifnot(is_integer(comps_var_dt, nneg=TRUE))
+    stopifnot(fMRItools::is_integer(comps_var_dt, nneg=TRUE))
   }
   comps_dt <- (comps_mean_dt > 0) || (comps_var_dt > 0)
   kurt_quantile <- as.numeric(kurt_quantile)
@@ -214,7 +215,7 @@ pscrub_multi = function(
   get_dirs <- as.logical(get_dirs); stopifnot(isTRUE(get_dirs) || isFALSE(get_dirs))
   full_PCA <- as.logical(full_PCA); stopifnot(isTRUE(full_PCA) || isFALSE(full_PCA))
   get_outliers <- as.logical(get_outliers); stopifnot(isTRUE(get_outliers) || isFALSE(get_outliers))
-  cutoff <- as.numeric(cutoff); stopifnot(is_integer(cutoff, nneg=TRUE))
+  cutoff <- as.numeric(cutoff); stopifnot(fMRItools::is_integer(cutoff, nneg=TRUE))
   verbose <- as.logical(verbose); stopifnot(isTRUE(verbose) || isFALSE(verbose))
 
   # ----------------------------------------------------------------------------
@@ -232,7 +233,7 @@ pscrub_multi = function(
       cat(action, "the data columns.\n")
     }
 
-    # Center & scale here, rather than calling `scale_med`, to save memory.
+    # Center & scale here, rather than calling `fMRItools::scale_med`, to save memory.
     X <- t(X)
     if (center) { X <- X - c(rowMedians(X)) }
     if (scale) { X <- X / (1.4826 * rowMedians(abs(X))) }
@@ -350,7 +351,7 @@ pscrub_multi = function(
     out$fusedPCA$PC_exec_times <- NULL; out$fusedPCA$nItes <- NULL
     # V matrix from PCA no longer needed.
     if(!get_dirs){ out$PCA$V <- NULL }
-
+    
     tf_const_mask <- apply(out$fusedPCA$u, 2, is_constant)
     if(any(tf_const_mask)){
       warning(

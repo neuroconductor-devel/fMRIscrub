@@ -28,11 +28,11 @@ test_that("pscrub works", {
   ))
 
   psx <- testthat::expect_warning(pscrub(
-    matrix(rnorm(10000), nrow=100) + 100, nuisance=dct_bases(100, 2)
+    matrix(rnorm(10000), nrow=100) + 100, nuisance=fMRItools::dct_bases(100, 2)
   ))
 
   psx <- testthat::expect_warning(pscrub(
-    Dat2, projection="fusedPCA", nuisance=cbind(1, dct_bases(nrow(Dat2), 12)),
+    Dat2, projection="fusedPCA", nuisance=cbind(1, fMRItools::dct_bases(nrow(Dat2), 12)),
     comps_mean_dt=2, comps_var_dt=2, get_dirs=TRUE, get_outliers=FALSE
   ))
   plot(psx)
@@ -70,5 +70,5 @@ test_that("ciftiTools-related functions work", {
 })
 
 test_that("Miscellaneous functions work", {
-  testthat::expect_warning(summary(pscrub(fsl_bptf(Dat2))))
+  testthat::expect_warning(summary(pscrub(fMRItools::fsl_bptf(Dat2))))
 })

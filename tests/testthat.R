@@ -5,6 +5,7 @@ my_wb <- "../../workbench"
 library(testthat)
 library(ciftiTools)
 if (interactive()) { ciftiTools.setOption("wb_path", my_wb) }
+library(fMRItools)
 
 library(fMRIscrub)
 
