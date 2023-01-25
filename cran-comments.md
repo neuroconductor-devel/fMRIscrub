@@ -14,3 +14,8 @@ None.
 ## Tests
 
 Passes all the tests in `tests/testthat.R`.
+
+# Resubmission #1
+
+The previous submission failed automatic checks because a suggested package is
+not on CRAN (`glmgen`). Any references to this package have now been removed. 
