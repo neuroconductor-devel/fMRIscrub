@@ -36,7 +36,6 @@ Depends: R (>= 3.5.0)
 License: GPL-3
 Encoding: UTF-8
 Imports:
-    expm,
     MASS,
     e1071,
     fMRItools (>= 0.2.2),
@@ -54,11 +53,8 @@ Suggests:
     rmarkdown,
     RNifti,
     ggplot2,
-    ggpubr,
-    gsignal,
     fastICA,
     oro.nifti,
-    gridExtra,
     testthat (>= 3.0.0),
     covr
 Roxygen: list(markdown = TRUE)
