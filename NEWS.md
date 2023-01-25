@@ -1,3 +1,8 @@
+# 0.12.0
+
+* Use `fMRItools` where possible and remove duplicated functions from here.
+* Remove AppVeyor
+
 # 0.8.0
 
 * Renamed `clever` to `projection scrubbing`
