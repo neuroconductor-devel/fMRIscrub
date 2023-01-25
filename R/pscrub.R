@@ -81,8 +81,8 @@
 #'
 #' @examples
 #' library(fastICA)
-#' n_voxels = 5e3
-#' n_timepoints = 70
+#' n_voxels = 2e3
+#' n_timepoints = 35
 #' X = matrix(rnorm(n_timepoints*n_voxels), ncol = n_voxels)
 #'
 #' psx = pscrub(X)
