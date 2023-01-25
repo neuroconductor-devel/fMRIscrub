@@ -17,11 +17,11 @@ test_that("pscrub works", {
   psx <- testthat::expect_warning(pscrub(Dat1))
   plot(psx)
 
-  psx <- pscrub(
-    matrix(rnorm(9000), nrow=30), "fusedPCA", 1, center=FALSE, PESEL=FALSE, kurt_quantile=.8,
-    full_PCA = TRUE, cutoff=5, verbose=TRUE
-  )
-  plot(psx)
+  # psx <- pscrub(
+  #   matrix(rnorm(9000), nrow=30), "fusedPCA", 1, center=FALSE, PESEL=FALSE, kurt_quantile=.8,
+  #   full_PCA = TRUE, cutoff=5, verbose=TRUE
+  # )
+  # plot(psx)
 
   psx <- testthat::expect_warning(pscrub(
     matrix(rnorm(10000), ncol=50)

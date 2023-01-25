@@ -3,11 +3,14 @@ test_that("pscrub works", {
     Dat1,
     projection = "all"
   ))
-  testthat::expect_warning(fMRIscrub:::plot.scrub_projection_multi(psx))
+  fMRIscrub:::plot.scrub_projection_multi(psx) # expect_warning w/ fusedPCA?
 
   psx <- testthat::expect_warning(fMRIscrub:::pscrub_multi(
     Dat2,
-    projection = c("fusedPCA", "ICA_kurt"),
+    projection = c(
+      #"fusedPCA",
+      "ICA_kurt"
+    ),
     kurt_quantile = .90,
     cutoff = 5,
     verbose = TRUE
@@ -31,11 +34,11 @@ test_that("pscrub works", {
     matrix(rnorm(10000), nrow=100) + 100, nuisance=fMRItools::dct_bases(100, 2)
   ))
 
-  psx <- testthat::expect_warning(pscrub(
-    Dat2, projection="fusedPCA", nuisance=cbind(1, fMRItools::dct_bases(nrow(Dat2), 12)),
-    comps_mean_dt=2, comps_var_dt=2, get_dirs=TRUE, get_outliers=FALSE
-  ))
-  plot(psx)
+  # psx <- testthat::expect_warning(pscrub(
+  #   Dat2, projection="fusedPCA", nuisance=cbind(1, fMRItools::dct_bases(nrow(Dat2), 12)),
+  #   comps_mean_dt=2, comps_var_dt=2, get_dirs=TRUE, get_outliers=FALSE
+  # ))
+  # plot(psx)
 })
 
 test_that("DVARS works", {

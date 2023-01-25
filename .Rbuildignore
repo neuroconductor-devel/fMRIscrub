@@ -16,3 +16,4 @@ robdist_new.*\.R
 ^codecov\.yml$
 ^\.github$
 ^CRAN-SUBMISSION$
+^R/fusedPCA\.R$

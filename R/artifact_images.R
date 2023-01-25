@@ -49,12 +49,12 @@ artifact_images <- function(psx, idx=NULL, use_dt=TRUE){
       stop("No directions. Run `pscrub` again with `get_dirs=TRUE`.") 
     }
     V <- psx$PCA$V
-  } else if ("fusedPCA" %in% names(psx)) {
-    U <- psx$fusedPCA$U
-    if (!("V" %in% names(psx$PCA))) { 
-      stop("No directions. Run `pscrub` again with `get_dirs=TRUE`.")
-    }
-    V <- psx$fusedPCA$V
+  # } else if ("fusedPCA" %in% names(psx)) {
+  #   U <- psx$fusedPCA$U
+  #   if (!("V" %in% names(psx$PCA))) { 
+  #     stop("No directions. Run `pscrub` again with `get_dirs=TRUE`.")
+  #   }
+  #   V <- psx$fusedPCA$V
   } else if ("ICA" %in% names(psx)) {
     U <- fMRItools::scale_med(psx$ICA$M)
     if (!("S" %in% names (psx$ICA))) {

@@ -1,7 +1,8 @@
-# 0.12.0
+# 0.12.1
 
 * Use `fMRItools` where possible and remove duplicated functions from here.
 * Remove AppVeyor
+* Remove fusedPCA (glmgen is not on CRAN, and C++ has some problems)
 
 # 0.8.0
 
