@@ -1,17 +1,8 @@
-# 0.11.1
+# 0.12.1
 
-* Remove `fusedPCA`
-* Remove unused dependencies
-
-# 0.10.0
-
-* General package cleanup
-
-# 0.9.0
-
-* Add detrending
-* Add grayplot
-* Switch to `fastICA`
+* Use `fMRItools` where possible and remove duplicated functions from here.
+* Remove AppVeyor
+* Remove fusedPCA (glmgen is not on CRAN, and C++ has some problems)
 
 # 0.8.0
 
