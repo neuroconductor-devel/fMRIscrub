@@ -96,7 +96,7 @@ RD_univOut <- function(
 #'
 #' @keywords internal
 #' @return The data with imputed outliers.
-RD_impData <- function(data, univOut, cutoff = 4){
+RD_impData <- function(data, univOut){
   t = nrow(data)
   Q = ncol(data)
   impData <- data
@@ -104,10 +104,12 @@ RD_impData <- function(data, univOut, cutoff = 4){
   for (ii in seq(Q)) {
     temp <- data[,ii]
     univOut_ii <- univOut[,ii]
-    if (length(univOut_ii) == 0) next
-    temp[univOut_ii] <- NA
+    ind_univOut <- which(univOut_ii == T)
+    if (length(ind_univOut) == 0) next
+    temp[ind_univOut] <- NA
 
-    for (jj in univOut_ii) {
+    univOut[ind_univOut,ii] = TRUE
+    for (jj in ind_univOut) {
       temp_L = temp[seq(jj)]
       temp_L_indx = which(!is.na(temp_L))
       L_indx <- max(temp_L_indx, na.rm = TRUE)
