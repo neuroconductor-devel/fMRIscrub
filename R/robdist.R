@@ -178,7 +178,7 @@ robdist = function(
   RD_quantile = 0.99,
   trans = c("none", "robust-YJ", "SHASH"),
   bootstrap_n = 1000,
-  bootstrap_alpha = 0.05,
+  bootstrap_alpha = 0.01,
   projection=c(
     "ICA",
     #"fusedPCA",
