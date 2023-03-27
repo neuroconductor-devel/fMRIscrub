@@ -227,7 +227,7 @@ robdist = function(
   univOut <- RD_univOut(data_ps, cutoff = RD_cutoff, trans=trans)
 
   # Impute.
-  impData <- RD_impData(data_ps, univOut, cutoff = RD_cutoff)
+  impData <- RD_impData(data_ps, univOut)
 
   # Define dims.
   nT = dim(impData)[1]
