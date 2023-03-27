@@ -265,6 +265,7 @@ robdist = function(
   # Return results.
   list(
     RD = rd,
+    ind_incld = ind_incld,
     lwr_50=lwr_50, lwr_80=lwr_80,
     lwr_quant = quantile(B_quant, RD_quantile/2),
     B_quant=B_quant
