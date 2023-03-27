@@ -177,7 +177,7 @@ robdist = function(
   RD_cutoff = 4,
   RD_quantile = 0.99,
   trans = c("none", "robust-YJ", "SHASH"),
-  bootstrap_n = 100,
+  bootstrap_n = 1000,
   bootstrap_alpha = 0.05,
   projection=c(
     "ICA",
