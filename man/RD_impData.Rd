@@ -4,7 +4,7 @@
 \alias{RD_impData}
 \title{Impute outliers for robust distance}
 \usage{
-RD_impData(data, univOut, cutoff = 4)
+RD_impData(data, univOut)
 }
 \arguments{
 \item{data}{The data}
