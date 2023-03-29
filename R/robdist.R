@@ -67,10 +67,9 @@ RD_univOut <- function(
       ind_out <- which(temp <= cutoff1 | temp >= cutoff2)
       univOut[ind_out,ii] <- TRUE
     }
-  } else if (trans=="robust=YJ") {
+  } else if (trans=="robust-YJ") {
     for (ii in seq(Q)) {
       temp <- data[,ii]
-      # NEEED TO ASK MANDY about the prestandardization
       trans_temp <- (cellWise::transfo(temp, type = "YJ",robust = TRUE, prestandardize = TRUE))$Xt
       medi <- median(trans_temp)
       MAD <- median(abs(trans_temp - medi))
