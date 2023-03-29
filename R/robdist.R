@@ -228,6 +228,10 @@ robdist = function(
   # Impute.
   impData <- RD_impData(data_ps, univOut)
 
+  # RD of imputed data
+  ind_incld_imp <- c(cov.mcd(impData)$best)
+  rd_impData <-  RD_meas(impData, ind_incld_imp)
+
   # Define dims.
   nT = dim(impData)[1]
   nQ = dim(impData)[2]
@@ -265,7 +269,8 @@ robdist = function(
   list(
     data = data_ps, # the dimension reduced and high kurtosis selected data
     dims = c(nT,nQ), # dimension of dimension reduced and high kurtosis selected data
-    RD = rd,
+    RD = rd, # RD of data_ps
+    RD_impData = rd_impData,  # RD of the imputed data
     ind_incld = ind_incld,
     lwr_50=lwr_50, lwr_80=lwr_80,
     lwr_quant = quantile(B_quant, RD_quantile/2),
