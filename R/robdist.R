@@ -265,6 +265,8 @@ robdist = function(
   # 80% CI - 0.9 coverage
   lwr_80 <- quantile(B_quant, c(0.1, 0.9))[1]
 
+  # 95% CI - 0.975 coverage
+  lwr_95 <- quantile(B_quant, c(0.025, 0.975))[1]
   # Return results.
   list(
     data = data_ps, # the dimension reduced and high kurtosis selected data
@@ -272,7 +274,7 @@ robdist = function(
     RD = rd, # RD of data_ps
     RD_impData = rd_impData,  # RD of the imputed data
     ind_incld = ind_incld,
-    lwr_50=lwr_50, lwr_80=lwr_80,
+    lwr_50=lwr_50, lwr_80=lwr_80, lwr_95=lwr_95,
     lwr_quant = quantile(B_quant, RD_quantile/2),
     B_quant=B_quant
   )
