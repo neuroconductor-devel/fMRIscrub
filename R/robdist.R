@@ -264,6 +264,7 @@ robdist = function(
 
   # Return results.
   list(
+    data = data_ps, # the dimension reduced and high kurtosis selected data
     dims = c(nT,nQ), # dimension of dimension reduced and high kurtosis selected data
     RD = rd,
     ind_incld = ind_incld,
