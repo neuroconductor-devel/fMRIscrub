@@ -229,7 +229,9 @@ robdist = function(
   impData <- RD_impData(data_ps, univOut)
 
   # cutoff obtained from RD of imputed data
-  empirical = quantile(all$RD_impData$RD, probs =0.99)
+  ind_incld_imp <- c(cov.mcd(impData)$best)
+  rd_imp <- RD_meas(impData, ind_incld_imp)
+  empirical = quantile(rd_imp, probs =0.99)
 
   # Define dims.
   nT = dim(impData)[1]
