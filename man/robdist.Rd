@@ -24,6 +24,7 @@ robdist(
   get_outliers = TRUE,
   cutoff = 4,
   seed = 0,
+  skip_dimred = FALSE,
   verbose = FALSE
 )
 }

@@ -163,6 +163,7 @@ RD_impData <- function(data, univOut){
 #' @export
 #'
 #' @importFrom MASS cov.mcd
+#' @importFrom fMRItools is_1
 #'
 #' @examples
 #' library(fastICA)
@@ -189,34 +190,42 @@ robdist = function(
   #fusedPCA_kwargs=NULL,
   get_dirs=FALSE, full_PCA=FALSE,
   get_outliers=TRUE, cutoff=4, seed=0,
+  skip_dimred=FALSE,
   verbose=FALSE){
 
+  stopifnot(is_1(skip_dimred, "logical"))
+
   # Run `pscrub`.
-  projection <- match.arg(projection, c(
-    "ICA",
-    #"fusedPCA",
-    "PCA"
-  ))
-  data_ps <- pscrub(
-    X=X, projection=projection,
-    nuisance=nuisance,
-    center=center, scale=scale, comps_mean_dt=comps_mean_dt, comps_var_dt=comps_var_dt,
-    kurt_quantile=kurt_quantile,
-    #fusedPCA_kwargs=fusedPCA_kwargs,
-    get_dirs=get_dirs, full_PCA=full_PCA,
-    get_outliers=get_outliers, cutoff=cutoff, seed=seed,
-    verbose=verbose
-  )
+  if (!skip_dimred) {
+    projection <- match.arg(projection, c(
+      "ICA",
+      #"fusedPCA",
+      "PCA"
+    ))
+    data_ps <- pscrub(
+      X=X, projection=projection,
+      nuisance=nuisance,
+      center=center, scale=scale, comps_mean_dt=comps_mean_dt, comps_var_dt=comps_var_dt,
+      kurt_quantile=kurt_quantile,
+      #fusedPCA_kwargs=fusedPCA_kwargs,
+      get_dirs=get_dirs, full_PCA=full_PCA,
+      get_outliers=get_outliers, cutoff=cutoff, seed=seed,
+      verbose=verbose
+    )
 
-  # Get projection.
-  p_dname <- switch(projection, PCA="U", ICA="M")
-  data_ps <- if (kurt_quantile > 0) {
-    data_ps[[projection]][[p_dname]][,data_ps[[projection]]$highkurt]
+    # Get projection.
+    p_dname <- switch(projection, PCA="U", ICA="M")
+    data_ps <- if (kurt_quantile > 0) {
+      data_ps[[projection]][[p_dname]][,data_ps[[projection]]$highkurt]
+    } else {
+      data_ps[[projection]][[p_dname]]
+    }
+
+    if (ncol(data_ps)==0) { message("No high-kurtosis comps."); return(rep(FALSE, nrow(X))) }
+
   } else {
-    data_ps[[projection]][[p_dname]]
+    data_ps <- X
   }
-
-  if (ncol(data_ps)==0) { message("No high-kurtosis comps."); return(rep(FALSE, nrow(X))) }
 
   # Compute robust distances.
   ind_incld <- c(cov.mcd(data_ps)$best)
