@@ -11,7 +11,7 @@
 #' @importFrom expm sqrtm
 #' @keywords internal
 RD_meas <- function(data, ind_incld, dist=TRUE){
-
+ #test
   t <- dim(data)[1]
   Q <- dim(data)[2]
   h <- length(ind_incld)
@@ -281,6 +281,7 @@ robdist = function(
   # Return results.
   list(
     data = data_ps, # the dimension reduced and high kurtosis selected data
+    impData = impData, # imputed data
     dims = c(nT,nQ), # dimension of dimension reduced and high kurtosis selected data
     RD = rd, # RD of data_ps
     ind_incld = ind_incld,
