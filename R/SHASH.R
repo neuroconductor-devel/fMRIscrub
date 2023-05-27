@@ -13,6 +13,8 @@
 #'
 #' @return The transformed data.
 #' @importFrom fMRItools is_1 is_posNum
+#' 
+#' @export
 #'
 SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
   stopifnot(is.numeric(x))
@@ -50,6 +52,8 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 #' }
 #' 
 #' @importFrom gamlss gamlssML coefAll
+#' 
+#' @export
 #'
 SHASH_out <- function(x, maxit = 10){
   nL <- length(x)
@@ -70,7 +74,7 @@ SHASH_out <- function(x, maxit = 10){
     )
     est <- gamlss::coefAll(mod) 
     x_norm <- SHASH_to_normal(
-      data = x, 
+      x = x, 
       mu = est$mu, sigma = est$sigma, nu = est$nu, tau = est$tau, 
       inverse = FALSE
     )
