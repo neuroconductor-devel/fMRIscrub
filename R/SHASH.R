@@ -92,9 +92,11 @@ SHASH_out <- function(x, maxit = 10){
   }
 
   # Return results.
-  list(
+  out <- list(
     out_idx = which(!weight_new),
     last_iter = iter,
     converged = success
   )
+  class(out) <- "SHASH_out"
+  out
 }
