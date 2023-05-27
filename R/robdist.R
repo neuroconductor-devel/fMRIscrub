@@ -153,6 +153,7 @@ RD_impData <- function(data, univOut){
 #' @param PESEL Use \code{\link[pesel]{pesel}} to select the number of
 #'  components? Default: \code{TRUE}. Otherwise, use the number of principal
 #'  components with above-average variance.
+#' @param skip_dimred Skip dimension reduction? Default: \code{FALSE}.
 #' @return A \code{"robdist"} object, i.e. a list with components
 #' \describe{
 #'  \item{lwr_50}{...}

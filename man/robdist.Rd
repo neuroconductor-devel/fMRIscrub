@@ -134,6 +134,8 @@ Default: \code{FALSE} (return only the high-variance components).}
 \code{ica::icaimax}? If \code{NULL}, do not set a seed. If numeric (default:
 \code{0}), will use as the seed.}
 
+\item{skip_dimred}{Skip dimension reduction? Default: \code{FALSE}.}
+
 \item{verbose}{Should occasional updates be printed? Default: \code{FALSE}.}
 }
 \value{
