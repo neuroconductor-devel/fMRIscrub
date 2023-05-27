@@ -48,7 +48,8 @@ Imports:
     robustbase,
     stats,
     expm,
-    utils
+    utils,
+    gamlss
 Suggests:
     corpcor,
     cowplot,
