@@ -87,7 +87,7 @@ SHASH_out <- function(x, maxit = 10){
     weight_new <- (x_norm > lim_left) & (x_norm < lim_right) # TRUE for non-outliers
 
     # Check convergence.
-    if (all.equal(weight_old, weight_new)) {
+    if (all.equal(weight_old, weight_new) == T) {
       success <- 1
       break
     } else if (iter > maxit) {
