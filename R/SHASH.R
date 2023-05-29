@@ -56,9 +56,13 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 #'
 #' @export
 #'
-SHASH_out <- function(x, maxit = 100){
+SHASH_out <- function(x, maxit = 100, weight_init = NULL){
   nL <- length(x)
-  weight_new <- rep(TRUE, nL) # TRUE if not an outlier
+  if(is.null(weight_init)){
+    weight_new <- rep(TRUE, nL) # TRUE if not an outlier
+  } else{
+    weight_new <- weight_init # can initialize the weight of the outliers
+  }
   iter <- 0
   success <- 0
 

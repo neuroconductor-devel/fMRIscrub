@@ -4,7 +4,7 @@
 \alias{SHASH_out}
 \title{Robust outlier detection based on SHASH distribution}
 \usage{
-SHASH_out(x, maxit = 10)
+SHASH_out(x, maxit = 100)
 }
 \arguments{
 \item{x}{The numeric vector in which to detect outliers.}
@@ -15,6 +15,7 @@ SHASH_out(x, maxit = 10)
 A \code{"SHASH_out"} object, i.e. a list with components
 \describe{
 \item{out_idx}{Indices of the detected outliers.}
+\item{indx_iters}{TRUE for the detected outliers for each itertation.}
 \item{last_iter}{Last iteration number.}
 \item{converged}{Logical indicating whether the convergence criteria was satisfied or not.}
 }
