@@ -1,11 +1,11 @@
 #' SHASH to normal data transformation
-#' 
+#'
 #' Transform SHASH-distributed data to normal-distributed data.
 #'
 #' @param x Numeric vector of data to transform.
 #' @param mu Parameter that modulates the mean of \code{x}.
 #' @param sigma Parameter that modulates the variance of \code{x}.
-#'  Must be greater than zero. This parameter is on the logarithm scale. 
+#'  Must be greater than zero. This parameter is on the logarithm scale.
 #' @param nu Parameter that modulates the skewness of \code{x}.
 #' @param tau Parameter that modulates the tailweight of \code{x}.
 #'  Must be greater than zero. This parameter is on the logarithm scale.
@@ -13,7 +13,7 @@
 #'
 #' @return The transformed data.
 #' @importFrom fMRItools is_1 is_posNum
-#' 
+#'
 #' @export
 #'
 SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
@@ -37,12 +37,12 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 }
 
 #' Robust outlier detection based on SHASH distribution
-#' 
-#' A robust outlier detection based on modeling the data as coming from a SHASH 
+#'
+#' A robust outlier detection based on modeling the data as coming from a SHASH
 #'  distribution.
 #'
 #' @param x The numeric vector in which to detect outliers.
-#' @param maxit The maximum number of iterations. Default: \code{10}. 
+#' @param maxit The maximum number of iterations. Default: \code{10}.
 #'
 #' @return A \code{"SHASH_out"} object, i.e. a list with components
 #' \describe{
@@ -50,9 +50,9 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 #'  \item{last_iter}{Last iteration number.}
 #'  \item{converged}{Logical indicating whether the convergence criteria was satisfied or not.}
 #' }
-#' 
+#'
 #' @importFrom gamlss gamlssML coefAll
-#' 
+#'
 #' @export
 #'
 SHASH_out <- function(x, maxit = 10){
@@ -67,19 +67,19 @@ SHASH_out <- function(x, maxit = 10){
 
     # Transform the data.
     mod <- gamlss::gamlssML(
-      X~1, 
-      family = "SHASHo2", 
-      maxit = 10000, 
+      x~1,
+      family = "SHASHo2",
+      maxit = 10000,
       weight = as.numeric(weight_new)
     )
-    est <- gamlss::coefAll(mod) 
+    est <- gamlss::coefAll(mod)
     x_norm <- SHASH_to_normal(
-      x = x, 
-      mu = est$mu, sigma = est$sigma, nu = est$nu, tau = est$tau, 
+      x = x,
+      mu = est$mu, sigma = est$sigma, nu = est$nu, tau = est$tau,
       inverse = FALSE
     )
     x_norm_med <- median(x_norm)
-    
+
     # Detect outliers.
     MAD = (1.4826) * median(abs(x_norm - x_norm_med))
     lim_left = x_norm_med - 4 * MAD
