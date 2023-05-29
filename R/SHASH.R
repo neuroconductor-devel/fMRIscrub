@@ -47,6 +47,7 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 #' @return A \code{"SHASH_out"} object, i.e. a list with components
 #' \describe{
 #'  \item{out_idx}{Indices of the detected outliers.}
+#'  \item{indx_iters}{TRUE for the detected outliers for each itertation.}
 #'  \item{last_iter}{Last iteration number.}
 #'  \item{converged}{Logical indicating whether the convergence criteria was satisfied or not.}
 #' }
@@ -55,12 +56,13 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 #'
 #' @export
 #'
-SHASH_out <- function(x, maxit = 10){
+SHASH_out <- function(x, maxit = 100){
   nL <- length(x)
   weight_new <- rep(TRUE, nL) # TRUE if not an outlier
   iter <- 0
   success <- 0
 
+  indx_iters <- matrix(NA, nrow = nL, ncol = maxit)
   repeat {
     iter <- iter + 1
     weight_old <- weight_new
@@ -86,11 +88,13 @@ SHASH_out <- function(x, maxit = 10){
     lim_right = x_norm_med + 4 * MAD
     weight_new <- (x_norm > lim_left) & (x_norm < lim_right) # TRUE for non-outliers
 
+    indx_iters[, iter] = 1-weight_new
+
     # Check convergence.
     if (all.equal(weight_old, weight_new) == T) {
       success <- 1
       break
-    } else if (iter > maxit) {
+    } else if (iter >=  maxit) {
       break
     }
   }
@@ -98,6 +102,7 @@ SHASH_out <- function(x, maxit = 10){
   # Return results.
   out <- list(
     out_idx = which(!weight_new),
+    indx_iters = indx_iters,
     last_iter = iter,
     converged = success
   )
