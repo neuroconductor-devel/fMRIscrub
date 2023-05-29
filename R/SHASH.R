@@ -19,9 +19,9 @@
 SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
   stopifnot(is.numeric(x))
   stopifnot(is_1(mu, "numeric"))
-  stopifnot(is_posNum(sigma))
+  stopifnot(is_1(sigma, "numeric"))
   stopifnot(is_1(nu, "numeric"))
-  stopifnot(is_posNum(tau))
+  stopifnot(is_1(tau, "numeric"))
   stopifnot(is_1(inverse, "logical"))
 
   sigma <- exp(sigma)
