@@ -95,7 +95,7 @@ SHASH_out <- function(x, maxit = 100, weight_init = NULL){
     indx_iters[, iter] = 1 - weight_new
 
     # Check convergence.
-    if (all.equal(weight_old, weight_new) == T) {
+    if (all.equal(weight_old, weight_new) == TRUE) {
       success <- 1
       break
     } else if (iter >=  maxit) {
