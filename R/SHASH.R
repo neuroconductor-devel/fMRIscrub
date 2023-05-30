@@ -92,7 +92,7 @@ SHASH_out <- function(x, maxit = 100, weight_init = NULL){
     lim_right = x_norm_med + 4 * MAD
     weight_new <- (x_norm > lim_left) & (x_norm < lim_right) # TRUE for non-outliers
 
-    indx_iters[, iter] = 1-weight_new
+    indx_iters[, iter] = 1 - weight_new
 
     # Check convergence.
     if (all.equal(weight_old, weight_new) == T) {
