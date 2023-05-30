@@ -43,6 +43,8 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 #'
 #' @param x The numeric vector in which to detect outliers.
 #' @param maxit The maximum number of iterations. Default: \code{10}.
+#' @param MAD_thr MAD threshold for outlier flagging. Default: \code{4}.
+#' @param weight_init Initial weights. Default: \code{NULL} (no pre-determined outliers).
 #'
 #' @return A \code{"SHASH_out"} object, i.e. a list with components
 #' \describe{
@@ -56,7 +58,7 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 #'
 #' @export
 #'
-SHASH_out <- function(x, maxit = 100, weight_init = NULL){
+SHASH_out <- function(x, maxit = 100, MAD_thr = 4, weight_init = NULL){
   nL <- length(x)
   if(is.null(weight_init)){
     weight_new <- rep(TRUE, nL) # TRUE if not an outlier
@@ -93,6 +95,7 @@ SHASH_out <- function(x, maxit = 100, weight_init = NULL){
     lim_right = 4
     weight_new <- (x_norm > lim_left) & (x_norm < lim_right) # TRUE for non-outliers
 
+    # Log outliers on `indx_iters`.
     indx_iters[, iter] = 1 - weight_new
 
     # Check convergence.
@@ -113,4 +116,23 @@ SHASH_out <- function(x, maxit = 100, weight_init = NULL){
   )
   class(out) <- "SHASH_out"
   out
+}
+
+#' Robust empirical rule
+#' 
+#' Robust empirical rule outlier detection applicable to approximately Normal data
+#' 
+#' @param x The data
+#' @param thr MAD threshold
+#' 
+#' @return Logical vector indicating whether each element in \code{x} is an
+#'  outlier (\code{TRUE} if an outlier).
+#' @keywords internal
+emprule_rob <- function(x, thr=4){
+  x_med <- median(x)
+  # Detect outliers.
+  MAD = (1.4826) * median(abs(x - x_med))
+  lim_left = x_med - thr * MAD
+  lim_right = x_med + thr * MAD
+  out <- (x < lim_left) | (x > lim_right) 
 }
