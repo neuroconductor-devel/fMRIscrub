@@ -61,7 +61,7 @@ SHASH_out <- function(x, maxit = 100, weight_init = NULL){
   if(is.null(weight_init)){
     weight_new <- rep(TRUE, nL) # TRUE if not an outlier
   } else{
-    weight_new <- weight_init # can initialize the weight of the outliers
+    weight_new <- as.logical(weight_init) # can initialize the weight of the outliers
   }
   iter <- 0
   success <- 0
@@ -84,12 +84,13 @@ SHASH_out <- function(x, maxit = 100, weight_init = NULL){
       mu = est$mu, sigma = est$sigma, nu = est$nu, tau = est$tau,
       inverse = FALSE
     )
-    x_norm_med <- median(x_norm)
+
+    # x_norm_med <- median(x_norm)
 
     # Detect outliers.
-    MAD = (1.4826) * median(abs(x_norm - x_norm_med))
-    lim_left = x_norm_med - 4 * MAD
-    lim_right = x_norm_med + 4 * MAD
+    # MAD = (1.4826) * median(abs(x_norm - x_norm_med))
+    lim_left = - 4
+    lim_right = 4
     weight_new <- (x_norm > lim_left) & (x_norm < lim_right) # TRUE for non-outliers
 
     indx_iters[, iter] = 1 - weight_new
