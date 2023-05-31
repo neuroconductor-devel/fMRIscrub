@@ -43,12 +43,14 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 #'
 #' @param x The numeric vector in which to detect outliers.
 #' @param maxit The maximum number of iterations. Default: \code{10}.
-#' @param MAD_thr MAD threshold for outlier flagging. Default: \code{4}.
+#' @param out_lim SD threshold for outlier flagging. Default: \code{4}.
 #' @param weight_init Initial weights. Default: \code{NULL} (no pre-determined outliers).
 #'
 #' @return A \code{"SHASH_out"} object, i.e. a list with components
 #' \describe{
 #'  \item{out_idx}{Indices of the detected outliers.}
+#'  \item{x_norm}{The normalized data.}
+#'  \item{SHASH_coef}{Coefficients for the SHASH-to-normal transformation.}
 #'  \item{indx_iters}{TRUE for the detected outliers for each itertation.}
 #'  \item{last_iter}{Last iteration number.}
 #'  \item{converged}{Logical indicating whether the convergence criteria was satisfied or not.}
@@ -58,7 +60,7 @@ SHASH_to_normal <- function(x, mu, sigma, nu, tau, inverse = FALSE){
 #'
 #' @export
 #'
-SHASH_out <- function(x, maxit = 100, MAD_thr = 4, weight_init = NULL){
+SHASH_out <- function(x, maxit = 100, out_lim = 4, weight_init = NULL){
   nL <- length(x)
   if(is.null(weight_init)){
     weight_new <- rep(TRUE, nL) # TRUE if not an outlier
@@ -66,7 +68,7 @@ SHASH_out <- function(x, maxit = 100, MAD_thr = 4, weight_init = NULL){
     weight_new <- as.logical(weight_init) # can initialize the weight of the outliers
   }
   iter <- 0
-  success <- 0
+  success <- FALSE
 
   indx_iters <- matrix(NA, nrow = nL, ncol = maxit)
   repeat {
@@ -87,20 +89,17 @@ SHASH_out <- function(x, maxit = 100, MAD_thr = 4, weight_init = NULL){
       inverse = FALSE
     )
 
-    # x_norm_med <- median(x_norm)
-
     # Detect outliers.
+    # x_norm_med <- median(x_norm)
     # MAD = (1.4826) * median(abs(x_norm - x_norm_med))
-    lim_left = - 4
-    lim_right = 4
-    weight_new <- (x_norm > lim_left) & (x_norm < lim_right) # TRUE for non-outliers
+    weight_new <- (x_norm > -out_lim) & (x_norm < out_lim) # TRUE for non-outliers
 
     # Log outliers on `indx_iters`.
     indx_iters[, iter] = 1 - weight_new
 
     # Check convergence.
     if (all.equal(weight_old, weight_new) == TRUE) {
-      success <- 1
+      success <- TRUE
       break
     } else if (iter >=  maxit) {
       break
@@ -110,6 +109,8 @@ SHASH_out <- function(x, maxit = 100, MAD_thr = 4, weight_init = NULL){
   # Return results.
   out <- list(
     out_idx = which(!weight_new),
+    x_norm = x_norm,
+    SHASH_coef = est[c("mu", "sigma", "nu", "tau")],
     indx_iters = indx_iters,
     last_iter = iter,
     converged = success

@@ -4,14 +4,14 @@
 \alias{SHASH_out}
 \title{Robust outlier detection based on SHASH distribution}
 \usage{
-SHASH_out(x, maxit = 100, MAD_thr = 4, weight_init = NULL)
+SHASH_out(x, maxit = 100, out_lim = 4, weight_init = NULL)
 }
 \arguments{
 \item{x}{The numeric vector in which to detect outliers.}
 
 \item{maxit}{The maximum number of iterations. Default: \code{10}.}
 
-\item{MAD_thr}{MAD threshold for outlier flagging. Default: \code{4}.}
+\item{out_lim}{SD threshold for outlier flagging. Default: \code{4}.}
 
 \item{weight_init}{Initial weights. Default: \code{NULL} (no pre-determined outliers).}
 }
@@ -19,6 +19,8 @@ SHASH_out(x, maxit = 100, MAD_thr = 4, weight_init = NULL)
 A \code{"SHASH_out"} object, i.e. a list with components
 \describe{
 \item{out_idx}{Indices of the detected outliers.}
+\item{x_norm}{The normalized data.}
+\item{SHASH_coef}{Coefficients for the SHASH-to-normal transformation.}
 \item{indx_iters}{TRUE for the detected outliers for each itertation.}
 \item{last_iter}{Last iteration number.}
 \item{converged}{Logical indicating whether the convergence criteria was satisfied or not.}
