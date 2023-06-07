@@ -30,3 +30,9 @@ A \code{"SHASH_out"} object, i.e. a list with components
 A robust outlier detection based on modeling the data as coming from a SHASH
 distribution.
 }
+\examples{
+x <- rnorm(100) + (seq(100)/200)
+x[77] <- 13
+SHASH_out(x)
+
+}
