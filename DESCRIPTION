@@ -1,7 +1,7 @@
 Package: fMRIscrub
 Type: Package
 Title: Scrubbing and Other Data Cleaning Routines for fMRI
-Version: 0.12.1
+Version: 0.13.0
 Authors@R: c(
     person(given = "Amanda",
            family = "Mejia",
@@ -20,12 +20,16 @@ Authors@R: c(
     person(given = "Daniel",
            family = "McDonald",
            email = "daniel@stat.ubc.ca",
+           role = c("ctb")),
+    person(given = "Fatma",
+           family = "Parlak",
+           email = "fparlak@iu.edu",
            role = c("ctb"))
     )
 Maintainer: Amanda Mejia <mandy.mejia@gmail.com>
 Description: Data-driven fMRI denoising with projection scrubbing (Pham et al 
-    (2022) <arXiv:2108.00319>). Also includes routines for DVARS (Derivatives 
-    VARianceS) (Afyouni and Nichols (2018) 
+    (2022) <doi:10.1016/j.neuroimage.2023.119972>). Also includes routines for 
+    DVARS (Derivatives VARianceS) (Afyouni and Nichols (2018) 
     <doi:10.1016/j.neuroimage.2017.12.098>), motion scrubbing (Power et al 
     (2012) <doi:10.1016/j.neuroimage.2011.10.018>), aCompCor (anatomical 
     Components Correction) (Muschelli et al (2014)
@@ -37,12 +41,15 @@ License: GPL-3
 Encoding: UTF-8
 Imports:
     MASS,
+    cellWise,
     e1071,
     fMRItools (>= 0.2.2),
     pesel,
     robustbase,
     stats,
-    utils
+    expm,
+    utils,
+    gamlss
 Suggests:
     corpcor,
     cowplot,

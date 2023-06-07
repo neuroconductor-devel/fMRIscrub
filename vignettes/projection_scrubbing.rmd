@@ -20,21 +20,19 @@ if (!requireNamespace("oro.nifti", quietly = TRUE)) {
 library(oro.nifti)
 ```
 
-`fMRIscrub` is an R package that implements routines for cleaning fMRI data, namely data-driven scrubbing (projection scrubbing and DVARS), motion scrubbing (framewise displacement), anatomical CompCor, detrending, and nuisance regression. Several of these methods are also applicable to other high-dimensional data analysis tasks. For example, projection scrubbing can be used as a general outlier detection method.
+`fMRIscrub` is an R package that implements routines for scrubbing fMRI data, namely projection scrubbing, DVARS, and motion scrubbing with framewise displacement. Projection scrubbing is also applicable to other high-dimensional outlier detection tasks.
 
-In this vignette we will highlight the use of projection scrubbing for identifying and removing contaminated volumes from fMRI scans. Projection scrubbing works by identifying component directions in the data likely to represent transient artifacts, and then computing a composite measure for the amount of these signals at each volume. The projection can be PCA, ICA, or "fused PCA," and the composite measure is based on the linear model concept of leverage. (An earlier version of projection scrubbing was named "PCA leverage"). Like other scrubbing methods, it is designed to detect burst noise caused by artifact sources such as subject head motion. Projection scrubbing can be cited with the following papers: 
+In this vignette we will highlight the use of projection scrubbing for identifying and removing contaminated volumes from fMRI scans. Projection scrubbing works by identifying component directions in the data likely to represent transient artifacts, and then computing a composite measure for the amount of these signals at each volume. The projection can be PCA or ICA, and the composite measure is based on the linear model concept of leverage. (An earlier version of projection scrubbing was named "PCA leverage"). Like other scrubbing methods, it is designed to detect burst noise caused by artifact sources such as subject head motion. Projection scrubbing can be cited with the following papers: 
 
-* Mejia, A. F., Nebel, M. B., Eloyan, A., Caffo, B. & Lindquist, M. A. PCA leverage: outlier detection for high-dimensional functional magnetic resonance imaging data. Biostatistics 18, 521-536 (2017).
-* Pham, D., McDonald, D., Ding, L., Nebel, M. B. & Mejia, A. Less is more: balancing noise reduction and data retention in fMRI with projection scrubbing (2022+).
-
-Citations for the other routines included in `fMRIscrub` can be found on their respective documentation pages, e.g. `help(fMRIscrub::DVARS)`.
+* Mejia, A. F., Nebel, M. B., Eloyan, A., Caffo, B. & Lindquist, M. A. PCA leverage: outlier detection for high-dimensional functional magnetic resonance imaging data. Biostatistics 18, 521–536 (2017).
+* Pham, D., McDonald, D., Ding, L., Nebel, M. B., & Mejia, A. Less is more: balancing noise reduction and data retention in fMRI with data-driven scrubbing. NeuroImage, 119972 (2023).
 
 ### Installation
 
-Install the package from GitHub and load it:
+Install the package from CRAN and load it:
 
 ```{r, warning = FALSE, message = FALSE}
-# devtools::install_github('mandymejia/fMRIscrub')
+# install.packages("fMRIscrub)
 library(fMRIscrub)
 ```
 
@@ -146,7 +144,7 @@ As input, `pscrub` takes a $T$ x $V$ matrix, $Y$. In our case, $Y$ represents an
 
 1. Normalize $Y$ by centering and scaling its columns robustly. (This can be disabled with the `center` and `scale` arguments.)
 
-2. Decompose the data into $Q$ components, each consisting of a length $V$ projection direction and a length $T$ signal timecourse, using PCA, ICA, or fused PCA. The projection directions are the $V$ matrix in PCA and fused PCA ($Y = UDV'$), and the $M$ matrix in ICA ($Y = MS$). The signal timecourses are the $U$ matrix in PCA and fused PCA, and the $S$ matrix in ICA. By default, ICA projection is used, and $Q$ is determined by the "PESEL" algorithm [(Sobczyk and others, 2017)](https://www.tandfonline.com/doi/abs/10.1080/10618600.2017.1340302). (This can be changed with the `projection` and `PESEL` arguments. Also, `comps_mean_dt` and `comps_var_dt` can be used to detrend the means and variances of the component timecourses after estimation, which is disabled by default.)
+2. Decompose the data into $Q$ components, each consisting of a length $V$ projection direction and a length $T$ signal timecourse, using PCA or ICA. The projection directions are the $V$ matrix in PCA ($Y = UDV'$), and the $M$ matrix in ICA ($Y = MS$). The signal timecourses are the $U$ matrix in PCA, and the $S$ matrix in ICA. By default, ICA projection is used, and $Q$ is determined by the "PESEL" algorithm [(Sobczyk and others, 2017)](https://www.tandfonline.com/doi/abs/10.1080/10618600.2017.1340302). (This can be changed with the `projection` and `PESEL` arguments. Also, `comps_mean_dt` and `comps_var_dt` can be used to detrend the means and variances of the component timecourses after estimation, which is disabled by default.)
 
 3. Select $K < Q$ of the $Q$ components which are likely to contain artifact information. By default, we select high-kurtosis components, since burst noise tends to manifest as transient deviations of much greater magnitude than would be expected of neuronal signals. (Use `kurt_quantile` to change or disable the kurtosis cutoff.)
 
@@ -168,7 +166,6 @@ For testing purposes, we can try different projections at the same time using th
 ps.Dat1.3 <- fMRIscrub:::pscrub_multi(
   Dat1, projection=c(
     "ICA_kurt", 
-    #"fusedPCA_kurt", 
     "ICA"
   ), verbose=TRUE, comps_mean_dt=1, comps_var_dt=1
 )
