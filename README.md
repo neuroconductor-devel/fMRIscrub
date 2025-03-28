@@ -60,5 +60,10 @@ to view the tutorial vignette.
 
 ## Citation
 
-If using projection scrubbing, you can cite our pre-print at
-<https://arxiv.org/abs/2108.00319>.
+If using projection scrubbing, you can cite our 2023 paper [“Less is
+more: balancing noise reduction and data retention in fMRI with
+data-driven
+scrubbing”](https://doi.org/10.1016/j.neuroimage.2023.119972). In the
+Methods section there is also a description of how FD and DVARS are
+calculated (section 2.2), and how scrubbing can be implemented in a
+simultaneous nuisance regression framework (section 2.3.3).
