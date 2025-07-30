@@ -1,12 +1,12 @@
 #' Compare projection scrubbing measures with \code{pscrub_multi}
-#' 
-#' Calculates leverage to identify outliers in high-dimensional data. 
+#'
+#' Calculates leverage to identify outliers in high-dimensional data.
 #'  Can get results using multiple kinds of projections.
-#' 
+#'
 #' @inheritParams pscrub_Params
-#' @param projection Projection scrubbing projects the data onto directions 
+#' @param projection Projection scrubbing projects the data onto directions
 #'  likely to contain outlier information. Choose at least one of the following:
-#' 
+#'
 #'  \describe{
 #'    \item{\code{"PCA"}}{PCA using the top \eqn{k} PCs.}
 #'    \item{\code{"PCA_kurt"}}{PCA using the high-kurtosis PCs among the top \eqn{k}.}
@@ -21,10 +21,10 @@
 #'    \item{\code{"ICA2"}}{ICA using the top \eqn{k2} ICs.}
 #'    \item{\code{"ICA2_kurt"}}{ICA using the high-kurtosis ICs among the top \eqn{k2}.}
 #'  }
-#' 
+#'
 #'  where \eqn{k} is the number of components determined by PESEL, and \eqn{k2}
 #'  is the number of principal components with above-average variance.
-#'  
+#'
 #'  Use \code{"all"} to use all projection methods. Default: \code{"ICA_kurt"}.
 #' @return A \code{"pscrub_multi"} object, i.e. a list with components
 #' \describe{
@@ -52,7 +52,7 @@
 #'      \item{nPCs_PESEL}{The number of PCs selected by PESEL.}
 #'      \item{nPCs_avgvar}{The number of above-average variance PCs.}
 #'    }
-#'    where \code{Q} is the number of PCs selected by PESEL or of above-average variance (or the greater of the two if both were used). 
+#'    where \code{Q} is the number of PCs selected by PESEL or of above-average variance (or the greater of the two if both were used).
 #'    If PCA was not used, all entries except \code{nPCs_PESEL} and/or \code{nPCs_avgvar} will not be included, depending on which
 #'    method(s) was used to select the number of PCs.
 #'  }
@@ -70,7 +70,7 @@
 #'  \item{ICA}{
 #'    If ICA was used, this will be a list with components:
 #'    \describe{
-#'      \item{S}{The \eqn{P} by \eqn{Q} source signals matrix. Included only if \code{get_dirs}} 
+#'      \item{S}{The \eqn{P} by \eqn{Q} source signals matrix. Included only if \code{get_dirs}}
 #'      \item{M}{The \eqn{T} by \eqn{Q} mixing matrix.}
 #'      \item{highkurt}{The length \code{Q} logical vector indicating mixing scores of high kurtosis.}
 #'      \item{M_dt}{Detrended components of \code{M}. Included only if components were mean- or variance-detrended.}
@@ -83,11 +83,11 @@
 #' @importFrom robustbase rowMedians
 #' @importFrom stats mad qnorm var setNames
 #' @importFrom fMRItools is_integer is_constant nuisance_regression as.matrix_ifti dct_bases validate_design_mat is_1 is_posNum
-#' 
+#'
 #' @keywords internal
-#' 
+#'
 pscrub_multi = function(
-  X, projection = "ICA_kurt", 
+  X, projection = "ICA_kurt",
   nuisance="DCT4",
   center=TRUE, scale=TRUE, comps_mean_dt=FALSE, comps_var_dt=FALSE,
   kurt_quantile=.99, #fusedPCA_kwargs=NULL,
@@ -126,7 +126,7 @@ pscrub_multi = function(
   if (any(X_const_mask)) {
     if (all(X_const_mask)) { stop("All data columns are constant.\n") }
     warning(
-      "Removing ", sum(X_const_mask), 
+      "Removing ", sum(X_const_mask),
       " constant data columns (out of ", ncol(X), ").\n"
     )
     X <- X[,!X_const_mask,drop=FALSE]
@@ -156,13 +156,13 @@ pscrub_multi = function(
 
   # `projection`----------------------------------------------------------------
   valid_projection_PESEL <- c(
-    "PCA", "PCA_kurt", 
-    #"fusedPCA", "fusedPCA_kurt", 
+    "PCA", "PCA_kurt",
+    #"fusedPCA", "fusedPCA_kurt",
     "ICA", "ICA_kurt"
   )
   valid_projection_avgvar <- c(
-    "PCA2", "PCA2_kurt", 
-    #"fusedPCA2", "fusedPCA2_kurt", 
+    "PCA2", "PCA2_kurt",
+    #"fusedPCA2", "fusedPCA2_kurt",
     "ICA2", "ICA2_kurt"
   )
   valid_projection <- c(valid_projection_PESEL, valid_projection_avgvar)
@@ -184,13 +184,13 @@ pscrub_multi = function(
   out$measure_info <- m_info
 
   # `nuisance`------------------------------------------------------------------
-  if (identical(nuisance, "DCT4")) { 
+  if (identical(nuisance, "DCT4")) {
     nuisance <- cbind(1, dct_bases(nrow(X), 4))
   } else {
     if (is.character(nuisance)) { stop("`nuisance` must be 'DCT4' or a numeric matrix.") }
   }
   do_nuisance <- !(is.null(nuisance) || isFALSE(nuisance) || identical(nuisance, 0))
-  if (do_nuisance) { 
+  if (do_nuisance) {
     nuisance <- validate_design_mat(nuisance, T_)
     design_const_mask <- apply(nuisance, 2, fMRItools::is_constant)
     if (!any(design_const_mask)) {
@@ -203,7 +203,7 @@ pscrub_multi = function(
   # Component detrending arguments. --------------------------------------------
   if (isTRUE(comps_mean_dt)) {
     comps_mean_dt <- 4
-  } else if (isFALSE(comps_mean_dt)) { 
+  } else if (isFALSE(comps_mean_dt)) {
     comps_mean_dt <- 0
   } else {
     comps_mean_dt <- as.numeric(comps_mean_dt)
@@ -211,7 +211,7 @@ pscrub_multi = function(
   }
   if (isTRUE(comps_var_dt)) {
     comps_var_dt <- 4
-  } else if (isFALSE(comps_var_dt)) { 
+  } else if (isFALSE(comps_var_dt)) {
     comps_var_dt <- 0
   } else {
     comps_var_dt <- as.numeric(comps_var_dt)
@@ -231,21 +231,21 @@ pscrub_multi = function(
   # Nuisance regression followed by centering & scaling. -----------------------
   # ----------------------------------------------------------------------------
 
-  if (do_nuisance) { 
+  if (do_nuisance) {
     if (verbose) { cat("Performing nuisance regression.\n") }
     X <- nuisance_regression(X, nuisance)
   }
 
   if (center || scale) {
-    if (verbose) { 
+    if (verbose) {
       action <- c("Centering", "Scaling", "Centering and scaling")[1*center + 2*scale]
       cat(action, "the data columns.\n")
     }
 
     # Center & scale here, rather than calling `fMRItools::scale_med`, to save memory.
     X <- t(X)
-    if (center) { X <- X - c(rowMedians(X)) }
-    if (scale) { X <- X / (1.4826 * rowMedians(abs(X))) }
+    if (center) { X <- X - c(robustbase::rowMedians(X)) }
+    if (scale) { X <- X / (1.4826 * robustbase::rowMedians(abs(X))) }
     X <- t(X)
   }
 
@@ -284,7 +284,7 @@ pscrub_multi = function(
           message(cond)
           if (!requireNamespace("corpcor", quietly = TRUE)) {
             stop(
-              "`svd` failed, and the backup routine `corpcor::fast.svd` ", 
+              "`svd` failed, and the backup routine `corpcor::fast.svd` ",
               "is not available since the Package \"corpcor\" is needed. ",
               "Please install it.", call. = FALSE
             )
@@ -302,7 +302,7 @@ pscrub_multi = function(
           message(cond)
           if (!requireNamespace("corpcor", quietly = TRUE)) {
             stop(
-              "`svd` failed, and the backup routine `corpcor::fast.svd` ", 
+              "`svd` failed, and the backup routine `corpcor::fast.svd` ",
               "is not available since the Package \"corpcor\" is needed. ",
               "Please install it.", call. = FALSE
             )
@@ -348,19 +348,19 @@ pscrub_multi = function(
   #   )[projection[grepl("fusedPCA", projection)]]))
   #   if (verbose) { cat("Computing fusedPCA.\n") }
   #   out$fusedPCA <- do.call(
-  #     fusedPCA, 
+  #     fusedPCA,
   #     c(
   #       list(
-  #         X=X, X.svd=out$PCA[c("U", "D", "V")], 
+  #         X=X, X.svd=out$PCA[c("U", "D", "V")],
   #         K=maxK_fusedPCA, solve_directions=get_dirs
-  #       ), 
+  #       ),
   #       fusedPCA_kwargs
   #     )
   #   )
   #   out$fusedPCA$PC_exec_times <- NULL; out$fusedPCA$nItes <- NULL
   #   # V matrix from PCA no longer needed.
   #   if(!get_dirs){ out$PCA$V <- NULL }
-    
+
   #   tf_const_mask <- apply(out$fusedPCA$u, 2, is_constant)
   #   if(any(tf_const_mask)){
   #     warning(
@@ -381,7 +381,7 @@ pscrub_multi = function(
   if (!is.null(out$PCA$U) && !full_PCA) {
     out$PCA$U <- out$PCA$U[, seq(maxK_PCA), drop=FALSE]
     out$PCA$D <- out$PCA$D[seq(maxK_PCA), drop=FALSE]
-    if (!is.null(out$PCA$V)) { 
+    if (!is.null(out$PCA$V)) {
       out$PCA$V <- out$PCA$V[, seq(maxK_PCA), drop=FALSE]
     }
   }
@@ -423,19 +423,19 @@ pscrub_multi = function(
   }
 
   if (comps_dt) {
-    if (!is.null(out$PCA$U)) { 
+    if (!is.null(out$PCA$U)) {
       out$PCA$U_dt <- apply(
         out$PCA$U, 2, rob_stabilize, center=comps_mean_dt, scale=comps_var_dt
       )
       out$PCA$highkurt_dt <- high_kurtosis(out$PCA$U_dt, kurt_quantile=kurt_quantile)
     }
-    # if (!is.null(out$fusedPCA$U)) { 
+    # if (!is.null(out$fusedPCA$U)) {
     #   out$fusedPCA$U_dt <- apply(
     #     out$fusedPCA$U, 2, rob_stabilize, center=comps_mean_dt, scale=comps_var_dt
     #   )
     #   out$fusedPCA$highkurt_dt <- high_kurtosis(out$fusedPCA$U_dt, kurt_quantile=kurt_quantile)
     # }
-    if (!is.null(out$ICA$M)) { 
+    if (!is.null(out$ICA$M)) {
       out$ICA$M_dt <- apply(
         out$ICA$M, 2, rob_stabilize, center=comps_mean_dt, scale=comps_var_dt
       )
@@ -455,7 +455,7 @@ pscrub_multi = function(
     proj_ii <- projection[ii]
     base_ii <- gsub("2", "", gsub("_kurt", "", proj_ii))
     scores_ii <- paste0(
-      ifelse(grepl("ICA", proj_ii), "M", "U"), 
+      ifelse(grepl("ICA", proj_ii), "M", "U"),
       ifelse(!isFALSE(comps_dt), "_dt", "")
     )
     highkurt_ii <- paste0("highkurt", ifelse(comps_dt, "_dt", ""))
@@ -479,8 +479,8 @@ pscrub_multi = function(
     if (grepl("kurt", proj_ii) && length(Comps_ii) < 1) {
       # No high-kurtosis components: no outliers!
       result_ii <- list(
-        meas = rep(0, T_), 
-        cut = NA, 
+        meas = rep(0, T_),
+        cut = NA,
         flag = rep(FALSE, T_)
       )
     } else {
@@ -512,6 +512,6 @@ pscrub_multi = function(
   }
 
   out <- out[!vapply(out, is.null, FALSE)]
- 
+
   structure(out, class="scrub_projection_multi")
 }

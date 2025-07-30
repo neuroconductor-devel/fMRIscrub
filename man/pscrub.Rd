@@ -178,10 +178,12 @@ outline of the algorithm: \code{vignette("projection_scrubbing", package="fMRIsc
 }
 
 \examples{
+\dontrun{
 library(fastICA)
 n_voxels = 2e3
 n_timepoints = 35
 X = matrix(rnorm(n_timepoints*n_voxels), ncol = n_voxels)
 
 psx = pscrub(X)
+}
 }

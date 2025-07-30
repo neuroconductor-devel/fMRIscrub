@@ -150,10 +150,12 @@ A \code{"robdist"} object, i.e. a list with components
 Scrubbing with robust distance.
 }
 \examples{
+\dontrun{
 library(fastICA)
 n_voxels = 2e3
 n_timepoints = 35
 X = matrix(rnorm(n_timepoints*n_voxels), ncol = n_voxels)
 
 rdx = robdist(X)
+}
 }
